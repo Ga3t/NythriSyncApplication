@@ -1,0 +1,45 @@
+server:
+  port: 31672
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 1
+      connection-timeout: 30000
+    url: ${DB_URL:jdbc:postgresql://caloryappdb.postgres.database.azure.com:5432/postgres?sslmode=require}
+    username: ${DB_USER:assdfytd}
+    password: ${DB_PASSWORD:QwertyWe12345!}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+#  kafka:
+#    bootstrap-servers: ${KAFKA_BOOTSTRAP:}
+#    consumer:
+#      bootstrap-servers: ${KAFKA_BOOTSTRAP:}
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#      properties:
+#        spring:
+#          deserializer:
+#            value:
+#              delegate:
+#                class: org.springframework.kafka.support.serializer.JsonDeserializer
+#              trusted:
+#                packages: com.caliq.core
+  web:
+    resources:
+      add-mappings: false

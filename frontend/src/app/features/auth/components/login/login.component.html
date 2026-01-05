@@ -1,0 +1,170 @@
+<div class="auth-container">
+  <div class="form-panel">
+    <div class="form-content">
+      <div class="logo-section">
+        <h1 class="logo-text">NutriSync</h1>
+      </div>
+      <div class="welcome-section">
+        <h2 class="welcome-title" *ngIf="activeTab === 'login'">Welcome Back</h2>
+        <h2 class="welcome-title" *ngIf="activeTab === 'signup'">Create Account</h2>
+        <p class="welcome-subtitle">Welcome back, Please enter your details</p>
+      </div>
+      <div class="tab-container">
+        <button class="tab-button" [class.active]="activeTab === 'login'" (click)="navigateToLogin()">
+          Sign In
+        </button>
+        <button class="tab-button" [class.active]="activeTab === 'signup'" (click)="navigateToRegister()">
+          Signup
+        </button>
+      </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form" *ngIf="activeTab === 'login'">
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput formControlName="login" required appLatinOnly placeholder="Username">
+            <mat-icon matSuffix *ngIf="loginForm.get('login')?.valid && loginForm.get('login')?.value" class="success-icon">check_circle</mat-icon>
+            <mat-error *ngIf="loginForm.get('login')?.hasError('required')">
+              Username is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix>lock</mat-icon>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required placeholder="Password">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+              Password is required
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <button
+          mat-raised-button
+          type="submit"
+          class="continue-button"
+          [disabled]="loginForm.invalid || loading">
+          <span *ngIf="!loading">Continue</span>
+          <span *ngIf="loading">Logging in...</span>
+        </button>
+      </form>
+      <form [formGroup]="registrationForm" (ngSubmit)="onRegisterSubmit()" class="auth-form" *ngIf="activeTab === 'signup'">
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Username</mat-label>
+            <mat-icon matPrefix>person</mat-icon>
+            <input matInput formControlName="username" required appLatinOnly>
+            <mat-icon matSuffix *ngIf="registrationForm.get('username')?.valid && registrationForm.get('username')?.value" class="success-icon">check_circle</mat-icon>
+            <mat-error *ngIf="registrationForm.get('username')?.hasError('required')">
+              Username is required
+            </mat-error>
+            <mat-error *ngIf="registrationForm.get('username')?.hasError('minlength')">
+              Username must be at least 3 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <mat-icon matPrefix>email</mat-icon>
+            <input matInput type="email" formControlName="email" required>
+            <mat-icon matSuffix *ngIf="registrationForm.get('email')?.valid && registrationForm.get('email')?.value" class="success-icon">check_circle</mat-icon>
+            <mat-error *ngIf="registrationForm.get('email')?.hasError('required')">
+              Email is required
+            </mat-error>
+            <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">
+              Please enter a valid email
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix>lock</mat-icon>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required placeholder="Password">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="registrationForm.get('password')?.hasError('required')">
+              Password is required
+            </mat-error>
+            <mat-error *ngIf="registrationForm.get('password')?.hasError('minlength')">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-field-wrapper">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirm Password</mat-label>
+            <mat-icon matPrefix>lock_outline</mat-icon>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="confirmPassword" required>
+            <mat-icon matSuffix *ngIf="registrationForm.get('confirmPassword')?.valid && registrationForm.get('confirmPassword')?.value && !registrationForm.hasError('passwordMismatch')" class="success-icon">check_circle</mat-icon>
+            <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('required')">
+              Please confirm your password
+            </mat-error>
+            <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('passwordMismatch') || registrationForm.hasError('passwordMismatch')">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <button
+          mat-raised-button
+          type="submit"
+          class="continue-button"
+          [disabled]="registrationForm.invalid || loading">
+          <span *ngIf="!loading">Continue</span>
+          <span *ngIf="loading">Registering...</span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="decorative-panel">
+    <div class="animated-text-container">
+      <div class="text-wrapper">
+        <h2 class="main-text" [class.typing-complete]="typingComplete">
+          <span class="typed-text">{{ displayedMainText }}</span><span class="cursor" *ngIf="!mainTextComplete">|</span>
+        </h2>
+        <p class="sub-text" *ngIf="mainTextComplete">
+          <span class="typed-text">{{ displayedSubText }}</span>
+          <span class="cursor" *ngIf="!subTypingComplete">|</span>
+        </p>
+      </div>
+    </div>
+    <div class="vines-side left">
+      <svg class="vine-svg" viewBox="0 0 250 1200" preserveAspectRatio="none">
+        <path class="vine-path pulsate" d="M30,-50 Q20,0 30,50 Q50,150 40,300 Q30,450 45,600 Q55,750 50,900 Q45,1050 35,1150 Q30,1200 25,1250" stroke="rgba(255,255,255,0.5)" fill="none" stroke-width="5"/>
+        <path class="vine-path pulsate-delay" d="M50,-50 Q40,0 50,50 Q70,180 60,330 Q50,480 65,630 Q75,780 70,930 Q65,1080 55,1180 Q50,1230 45,1280" stroke="rgba(255,255,255,0.4)" fill="none" stroke-width="4"/>
+        <path class="vine-path pulsate-delay-3" d="M15,0 Q10,50 20,100 Q35,200 25,350 Q15,500 30,650 Q40,800 35,950 Q30,1100 20,1200 Q15,1250 10,1300" stroke="rgba(255,255,255,0.35)" fill="none" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="vines-side right">
+      <svg class="vine-svg" viewBox="0 0 250 1200" preserveAspectRatio="none">
+        <path class="vine-path pulsate-delay-2" d="M220,-50 Q230,0 220,50 Q200,150 210,300 Q220,450 205,600 Q195,750 200,900 Q205,1050 215,1150 Q220,1200 225,1250" stroke="rgba(255,255,255,0.5)" fill="none" stroke-width="5"/>
+        <path class="vine-path pulsate-delay-3" d="M200,-50 Q210,0 200,50 Q180,180 190,330 Q200,480 185,630 Q175,780 180,930 Q185,1080 195,1180 Q200,1230 205,1280" stroke="rgba(255,255,255,0.4)" fill="none" stroke-width="4"/>
+        <path class="vine-path pulsate" d="M235,0 Q240,50 230,100 Q215,200 225,350 Q235,500 220,650 Q210,800 215,950 Q220,1100 230,1200 Q235,1250 240,1300" stroke="rgba(255,255,255,0.35)" fill="none" stroke-width="4"/>
+        <path class="vine-path pulsate-delay corner-curl" d="M250,0 Q245,20 250,40 Q245,60 250,80 Q245,100 250,120" stroke="rgba(255,255,255,0.45)" fill="none" stroke-width="5"/>
+      </svg>
+    </div>
+    <div class="vines-top">
+      <svg class="vine-svg-top" viewBox="0 0 1000 150" preserveAspectRatio="none">
+        <path class="vine-path pulsate" d="M0,100 Q100,80 200,90 Q300,70 400,85 Q500,75 600,88 Q700,80 800,90 Q900,85 1000,95 Q1000,50 950,30 Q900,20 850,25 Q800,15 750,20 Q700,10 650,18 Q600,12 550,15 Q500,8 450,12 Q400,5 350,10 Q300,0 250,5 Q200,-5 150,0 Q100,5 50,8 Q0,10 0,30 Z" stroke="rgba(255,255,255,0.4)" fill="none" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="vines-bottom">
+      <svg class="vine-svg-bottom" viewBox="0 0 1000 150" preserveAspectRatio="none">
+        <path class="vine-path pulsate-delay-2" d="M0,50 Q100,70 200,60 Q300,80 400,65 Q500,85 600,72 Q700,90 800,70 Q900,75 1000,65 Q1000,100 950,120 Q900,130 850,125 Q800,135 750,130 Q700,140 650,132 Q600,138 550,135 Q500,142 450,138 Q400,145 350,140 Q300,150 250,145 Q200,155 150,150 Q100,145 50,142 Q0,140 0,120 Z" stroke="rgba(255,255,255,0.4)" fill="none" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="particles-container">
+      <div class="particle" style="left: 45%; top: 20%; animation-delay: 0s;"></div>
+      <div class="particle" style="left: 50%; top: 30%; animation-delay: 1s;"></div>
+      <div class="particle" style="left: 48%; top: 50%; animation-delay: 2s;"></div>
+      <div class="particle" style="left: 52%; top: 60%; animation-delay: 1.5s;"></div>
+      <div class="particle" style="left: 46%; top: 70%; animation-delay: 0.5s;"></div>
+      <div class="particle" style="left: 51%; top: 40%; animation-delay: 2.5s;"></div>
+    </div>
+  </div>
+</div>

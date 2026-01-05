@@ -1,0 +1,228 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div>
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>{{ getFormattedDate() }}</h1>
+      <p class="subtitle">View and manage your nutrition for this date.</p>
+    </div>
+  </div>
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="!loading && mainPageData" class="dashboard-content">
+    <div class="today-macros-container">
+      <mat-card class="stat-card today-card-large">
+        <div class="stat-header">
+          <h3>Calories</h3>
+          <mat-icon class="stat-icon">local_fire_department</mat-icon>
+        </div>
+        <div class="stat-value" [class.over]="getTodayCaloriesOver() > 0">
+          <span *ngIf="getTodayCaloriesLeft() > 0">{{ getTodayCaloriesLeft() | number:'1.0-0' }}</span>
+          <span *ngIf="getTodayCaloriesOver() > 0">{{ getTodayCaloriesOver() | number:'1.0-0' }}</span>
+        </div>
+        <div class="stat-trend">
+          <span *ngIf="getTodayCaloriesLeft() > 0" class="trend-up">
+            <mat-icon>trending_up</mat-icon>
+            calories left to consume
+          </span>
+          <span *ngIf="getTodayCaloriesOver() > 0" class="trend-over">
+            <mat-icon>trending_up</mat-icon>
+            calories more consumed
+          </span>
+        </div>
+      </mat-card>
+      <div class="macros-grid">
+        <mat-card class="stat-card water-stat-card">
+          <div class="stat-header">
+            <h3>Water</h3>
+            <button mat-icon-button (click)="openAddWaterDialog()" class="add-button-small">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="semicircle-chart-container">
+            <svg class="semicircle-chart" viewBox="0 0 200 120">
+              <defs>
+                <pattern id="hatch-water-date" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="8" y2="8" stroke="#d0d0d0" stroke-width="1.5"/>
+                </pattern>
+              </defs>
+              <path class="semicircle-ring-hatched" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#hatch-water-date)" stroke-width="20" stroke-linecap="round"></path>
+              <path 
+                class="semicircle-segment water-segment" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#2196F3" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="251.33"
+                [attr.stroke-dashoffset]="251.33 - (getWaterProgress() / 100) * 251.33"></path>
+              <path 
+                *ngIf="getWaterProgress() > 3"
+                class="semicircle-segment-end water-segment-end" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#1565C0" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="'6 251.33'"
+                [attr.stroke-dashoffset]="251.33 - (getWaterProgress() / 100) * 251.33 - 3"></path>
+            </svg>
+            <div class="semicircle-label">
+              <span class="semicircle-percentage">{{ getWaterProgress() | number:'1.0-0' }}%</span>
+            </div>
+          </div>
+          <div class="stat-details">
+            <span>{{ getWaterConsumed() | number:'1.0-0' }}ml / {{ getWaterNeeds() | number:'1.0-0' }}ml</span>
+          </div>
+        </mat-card>
+        <mat-card class="stat-card fats-card">
+          <div class="stat-header">
+            <h3>Fats</h3>
+            <mat-icon class="stat-icon fats-icon">opacity</mat-icon>
+          </div>
+          <div class="semicircle-chart-container">
+            <svg class="semicircle-chart" viewBox="0 0 200 120">
+              <defs>
+                <pattern id="hatch-fats-date" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="8" y2="8" stroke="#d0d0d0" stroke-width="1.5"/>
+                </pattern>
+              </defs>
+              <path class="semicircle-ring-hatched" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#hatch-fats-date)" stroke-width="20" stroke-linecap="round"></path>
+              <path 
+                class="semicircle-segment fats-segment" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#FF9800" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="251.33"
+                [attr.stroke-dashoffset]="251.33 - (getFatsProgress() / 100) * 251.33"></path>
+              <path 
+                *ngIf="getFatsProgress() > 3"
+                class="semicircle-segment-end fats-segment-end" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#E65100" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="'6 251.33'"
+                [attr.stroke-dashoffset]="251.33 - (getFatsProgress() / 100) * 251.33 - 3"></path>
+            </svg>
+            <div class="semicircle-label">
+              <span class="semicircle-percentage" *ngIf="getFatsOverPercentage() === 0">{{ getFatsProgress() | number:'1.0-0' }}%</span>
+              <span class="semicircle-percentage over" *ngIf="getFatsOverPercentage() > 0">{{ getFatsOverPercentage() | number:'1.0-0' }}%</span>
+              <span class="semicircle-text" *ngIf="getFatsOverPercentage() > 0">more than norm</span>
+            </div>
+          </div>
+          <div class="stat-details">
+            <span>{{ getFatsConsumed() | number:'1.0-1' }}g / {{ getFatsNorm() | number:'1.0-1' }}g</span>
+          </div>
+        </mat-card>
+        <mat-card class="stat-card protein-card">
+          <div class="stat-header">
+            <h3>Protein</h3>
+            <mat-icon class="stat-icon">fitness_center</mat-icon>
+          </div>
+          <div class="semicircle-chart-container">
+            <svg class="semicircle-chart" viewBox="0 0 200 120">
+              <defs>
+                <pattern id="hatch-protein-date" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="8" y2="8" stroke="#d0d0d0" stroke-width="1.5"/>
+                </pattern>
+              </defs>
+              <path class="semicircle-ring-hatched" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#hatch-protein-date)" stroke-width="20" stroke-linecap="round"></path>
+              <path 
+                class="semicircle-segment protein-segment" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#E91E63" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="251.33"
+                [attr.stroke-dashoffset]="251.33 - (getProteinProgress() / 100) * 251.33"></path>
+              <path 
+                *ngIf="getProteinProgress() > 3"
+                class="semicircle-segment-end protein-segment-end" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#C2185B" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="'6 251.33'"
+                [attr.stroke-dashoffset]="251.33 - (getProteinProgress() / 100) * 251.33 - 3"></path>
+            </svg>
+            <div class="semicircle-label">
+              <span class="semicircle-percentage" *ngIf="getProteinOverPercentage() === 0">{{ getProteinProgress() | number:'1.0-0' }}%</span>
+              <span class="semicircle-percentage over" *ngIf="getProteinOverPercentage() > 0">{{ getProteinOverPercentage() | number:'1.0-0' }}%</span>
+              <span class="semicircle-text" *ngIf="getProteinOverPercentage() > 0">more than norm</span>
+            </div>
+          </div>
+          <div class="stat-details">
+            <span>{{ getProteinConsumed() | number:'1.0-1' }}g / {{ getProteinNorm() | number:'1.0-1' }}g</span>
+          </div>
+        </mat-card>
+        <mat-card class="stat-card carbs-card">
+          <div class="stat-header">
+            <h3>Carbohydrates</h3>
+            <mat-icon class="stat-icon">grain</mat-icon>
+          </div>
+          <div class="semicircle-chart-container">
+            <svg class="semicircle-chart" viewBox="0 0 200 120">
+              <defs>
+                <pattern id="hatch-carbs-date" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="8" y2="8" stroke="#d0d0d0" stroke-width="1.5"/>
+                </pattern>
+              </defs>
+              <path class="semicircle-ring-hatched" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#hatch-carbs-date)" stroke-width="20" stroke-linecap="round"></path>
+              <path 
+                class="semicircle-segment carbs-segment" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#66bb6a" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="251.33"
+                [attr.stroke-dashoffset]="251.33 - (getCarbsProgress() / 100) * 251.33"></path>
+              <path 
+                *ngIf="getCarbsProgress() > 3"
+                class="semicircle-segment-end carbs-segment-end" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#388e3c" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="'6 251.33'"
+                [attr.stroke-dashoffset]="251.33 - (getCarbsProgress() / 100) * 251.33 - 3"></path>
+            </svg>
+            <div class="semicircle-label">
+              <span class="semicircle-percentage" *ngIf="getCarbsOverPercentage() === 0">{{ getCarbsProgress() | number:'1.0-0' }}%</span>
+              <span class="semicircle-percentage over" *ngIf="getCarbsOverPercentage() > 0">{{ getCarbsOverPercentage() | number:'1.0-0' }}%</span>
+              <span class="semicircle-text" *ngIf="getCarbsOverPercentage() > 0">more than norm</span>
+            </div>
+          </div>
+          <div class="stat-details">
+            <span>{{ getCarbsConsumed() | number:'1.0-1' }}g / {{ getCarbsNorm() | number:'1.0-1' }}g</span>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+    <mat-card class="meals-card">
+      <div class="card-header">
+        <h3>Meals</h3>
+      </div>
+      <div class="meals-list">
+        <div class="meal-item" *ngFor="let meal of getMeals()">
+          <div class="meal-info">
+            <div class="meal-type">{{ meal.mealType }}</div>
+            <div class="meal-calories">{{ meal.caloryCons | number:'1.0-0' }} kcal</div>
+          </div>
+          <button mat-icon-button (click)="openAddMealDialog(meal.mealType)" class="add-meal-button">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

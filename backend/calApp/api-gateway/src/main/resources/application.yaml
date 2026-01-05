@@ -1,0 +1,47 @@
+server:
+  port: 8090
+
+debug: true
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        # ---------------- Auth Service ----------------
+        - id: auth_route
+          uri: ${AUTH_SERVICE_URI:http://userservice}
+          predicates:
+            - Path=/auth/**
+
+        # ---------------- User Details Service ----------------
+        - id: userdetails_route
+          uri: ${LEDGER_SERVICE_URI:http://caloryservice}
+          predicates:
+            - Path=/userdetails/**
+
+        # ---------------- Calorie Service ----------------
+        - id: calapp_route
+          uri: ${LEDGER_SERVICE_URI:http://caloryservice}
+          predicates:
+            - Path=/calapp/**
+
+        # ---------------- Analyse Service ----------------
+        - id: analyse_route
+          uri: ${LEDGER_SERVICE_URI:http://caloryservice}
+          predicates:
+            - Path=/analyse/**
+
+        # ---------------- API Connection Service ----------------
+        - id: product_route
+          uri: ${PRODUCT_SERVICE_URI:http://openfoodfactservice}
+          predicates:
+            - Path=/product/**
+
+        # ---------------- FatSecret / FoodSecret Service ----------------
+        - id: foodsecret_route
+          uri: ${FOODSECRET_SERVICE_URI:http://nythrisyncsecretservice}
+          predicates:
+            - Path=/foodsecret/**

@@ -1,0 +1,75 @@
+<div class="setup-profile-container" [style.--mdc-outlined-text-field-outline-color]="'rgba(0, 0, 0, 0.12)'" [style.--mdc-outlined-text-field-focus-outline-color]="'rgba(0, 0, 0, 0.38)'">
+  <div class="setup-card">
+    <div class="header">
+      <h1>Complete Your Profile</h1>
+      <p>Tell us about yourself to get started</p>
+    </div>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="setup-form">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Height (cm)</mat-label>
+          <input matInput type="number" formControlName="height" placeholder="Enter your height" required>
+          <mat-icon matPrefix>height</mat-icon>
+          <mat-error *ngIf="profileForm.get('height')?.hasError('required')">Height is required</mat-error>
+          <mat-error *ngIf="profileForm.get('height')?.hasError('min')">Minimum height is 50cm</mat-error>
+          <mat-error *ngIf="profileForm.get('height')?.hasError('max')">Maximum height is 250cm</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Current Weight (kg)</mat-label>
+          <input matInput type="number" formControlName="currentWeight" placeholder="Enter your weight" required>
+          <mat-icon matPrefix>monitor_weight</mat-icon>
+          <mat-error *ngIf="profileForm.get('currentWeight')?.hasError('required')">Current weight is required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-row">
+        <mat-form-field appearance="outline" >
+          <mat-label>Date of Birth</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="birthDay" placeholder="Select your date of birth" [max]="maxDate" [min]="minDate" (click)="picker.open()" required>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-icon matPrefix>cake</mat-icon>
+          <mat-error *ngIf="profileForm.get('birthDay')?.hasError('required')">Date of birth is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always"в>
+          <mat-label>Gender</mat-label>
+          <mat-select formControlName="sex" placeholder="Select your gender" required>
+            <mat-option value="MALE">Male</mat-option>
+            <mat-option value="FEMALE">Female</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>wc</mat-icon>
+          <mat-error *ngIf="profileForm.get('sex')?.hasError('required')">Gender is required</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-row">
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Activity Level</mat-label>
+          <mat-select formControlName="activityType" placeholder="Select your activity level" required>
+            <mat-option [value]="1.2">Sedentary (little or no exercise)</mat-option>
+            <mat-option [value]="1.375">Lightly Active (light exercise 1-3 days/week)</mat-option>
+            <mat-option [value]="1.55">Moderately Active (moderate exercise 3-5 days/week)</mat-option>
+            <mat-option [value]="1.725">Very Active (hard exercise 6-7 days/week)</mat-option>
+            <mat-option [value]="1.9">Extremely Active (very hard exercise, physical job)</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>fitness_center</mat-icon>
+          <mat-error *ngIf="profileForm.get('activityType')?.hasError('required')">Activity level is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Goal</mat-label>
+          <mat-select formControlName="goalType" placeholder="Select your goal" required>
+            <mat-option value="LOSS">Lose Weight</mat-option>
+            <mat-option value="MAINTENANCE">Maintain Weight</mat-option>
+            <mat-option value="GAIN">Gain Weight</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>flag</mat-icon>
+          <mat-error *ngIf="profileForm.get('goalType')?.hasError('required')">Goal is required</mat-error>
+        </mat-form-field>
+      </div>
+      <button
+        mat-raised-button
+        type="submit"
+        class="continue-button"
+        [disabled]="profileForm.invalid || loading">
+        {{ loading ? 'Saving...' : 'Continue' }}
+      </button>
+    </form>
+  </div>
+</div>

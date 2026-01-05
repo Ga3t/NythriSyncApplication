@@ -1,0 +1,242 @@
+<h2 mat-dialog-title>Add Meal - {{ data.mealType }}</h2>
+<mat-dialog-content>
+  <div *ngIf="loadingExistingMeal" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading existing meal data...</p>
+  </div>
+  <div *ngIf="!loadingExistingMeal" class="search-section">
+    <div *ngIf="currentStep === 'search'" class="step-container">
+    <div class="search-container">
+      <mat-tab-group [(selectedIndex)]="searchMethodIndex" (selectedIndexChange)="onSearchMethodChange($event)" class="search-tabs">
+        <mat-tab label="Search by Name">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Food Name</mat-label>
+              <input 
+                matInput 
+                [(ngModel)]="searchQuery" 
+                (keyup.enter)="searchFood()"
+                placeholder="Enter food name"
+                appLatinOnly>
+              <button mat-icon-button matSuffix (click)="searchFood()" [disabled]="searchingFood">
+                <mat-icon>search</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+        <mat-tab label="Search by Barcode">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Barcode</mat-label>
+              <input 
+                matInput 
+                [(ngModel)]="searchQuery" 
+                (keyup.enter)="searchFood()"
+                type="text"
+                placeholder="Enter barcode">
+              <button mat-icon-button matSuffix (click)="searchFood()" [disabled]="searchingFood">
+                <mat-icon>qr_code_scanner</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+      <div *ngIf="searchingFood" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    </div>
+    </div>
+      <div *ngIf="currentStep === 'results'" class="step-container">
+      <div class="results-header">
+        <button mat-icon-button (click)="goBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h3>Search Results</h3>
+        <span class="results-count" *ngIf="totalResults > 0">
+          ({{ getResultsRangeStart() }}-{{ getResultsRangeEnd() }} of {{ totalResults }})
+        </span>
+      </div>
+      <div class="search-results">
+        <div 
+          class="search-result-item" 
+          *ngFor="let food of searchResults" 
+          (click)="selectFoodFromResults(food)">
+          <div class="result-name">{{ food.name }}</div>
+          <div class="result-description" *ngIf="food.description">{{ food.description }}</div>
+        </div>
+        <div *ngIf="searchResults.length === 0" class="no-results">
+          No results found
+        </div>
+      </div>
+      <div *ngIf="totalPages > 1" class="pagination-controls">
+        <button mat-icon-button (click)="previousPage()" [disabled]="currentPage === 0" class="pagination-btn">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="page-info">Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+        <button mat-icon-button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1" class="pagination-btn">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div *ngIf="currentStep === 'details'" class="step-container">
+    <div class="details-header">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h3>{{ selectedFood?.name || foodDetails?.name }}</h3>
+    </div>
+    <div *ngIf="searchingFood" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+    <div *ngIf="!searchingFood && foodDetails" class="food-details">
+      <div class="quantity-section">
+        <mat-form-field appearance="outline" class="quantity-field" [formGroup]="quantityForm">
+          <mat-label>Quantity (grams)</mat-label>
+          <input 
+            matInput 
+            type="number" 
+            formControlName="quantity" 
+            min="0.01"
+            step="0.1">
+          <span matSuffix>g</span>
+          <mat-error *ngIf="quantityForm.get('quantity')?.hasError('required')">Quantity is required</mat-error>
+          <mat-error *ngIf="quantityForm.get('quantity')?.hasError('min')">Must be greater than 0</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="macros-display">
+        <mat-card class="macro-card">
+          <div class="macro-header">
+            <h4>Fats</h4>
+            <mat-icon class="macro-icon">opacity</mat-icon>
+          </div>
+          <div class="semicircle-chart-container">
+            <svg class="semicircle-chart" viewBox="0 0 200 120">
+              <path class="semicircle-ring" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"></path>
+              <path 
+                class="semicircle-segment" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#66bb6a" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="251.33"
+                [attr.stroke-dashoffset]="251.33 - (getMacroProgress('fat') / 100) * 251.33"></path>
+            </svg>
+            <div class="semicircle-label">
+              <span class="semicircle-value">{{ getCalculatedMacros().fat | number:'1.0-1' }}g</span>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="macro-card">
+          <div class="macro-header">
+            <h4>Protein</h4>
+            <mat-icon class="macro-icon">fitness_center</mat-icon>
+          </div>
+          <div class="semicircle-chart-container">
+            <svg class="semicircle-chart" viewBox="0 0 200 120">
+              <path class="semicircle-ring" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"></path>
+              <path 
+                class="semicircle-segment" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#66bb6a" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="251.33"
+                [attr.stroke-dashoffset]="251.33 - (getMacroProgress('protein') / 100) * 251.33"></path>
+            </svg>
+            <div class="semicircle-label">
+              <span class="semicircle-value">{{ getCalculatedMacros().protein | number:'1.0-1' }}g</span>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card class="macro-card">
+          <div class="macro-header">
+            <h4>Carbohydrates</h4>
+            <mat-icon class="macro-icon">grain</mat-icon>
+          </div>
+          <div class="semicircle-chart-container">
+            <svg class="semicircle-chart" viewBox="0 0 200 120">
+              <path class="semicircle-ring" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"></path>
+              <path 
+                class="semicircle-segment" 
+                d="M 20 100 A 80 80 0 0 1 180 100" 
+                fill="none" 
+                stroke="#66bb6a" 
+                stroke-width="20"
+                stroke-linecap="round"
+                [attr.stroke-dasharray]="251.33"
+                [attr.stroke-dashoffset]="251.33 - (getMacroProgress('carbs') / 100) * 251.33"></path>
+            </svg>
+            <div class="semicircle-label">
+              <span class="semicircle-value">{{ getCalculatedMacros().carbs | number:'1.0-1' }}g</span>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+      <div class="calories-display">
+        <span class="calories-label">Calories:</span>
+        <span class="calories-value">{{ getCalculatedMacros().calories | number:'1.0-1' }} kcal</span>
+      </div>
+      <button mat-raised-button color="primary" (click)="saveDish()" [disabled]="quantityForm.invalid" class="save-dish-btn">
+        <mat-icon>save</mat-icon>
+        Save Dish
+      </button>
+    </div>
+    </div>
+  </div>
+  <div *ngIf="!loadingExistingMeal && dishes.length > 0" class="meal-totals-section">
+    <h4>Meal Totals</h4>
+    <div class="totals-grid">
+      <mat-card class="total-card calories-card">
+        <div class="total-label">Calories</div>
+        <div class="total-value">{{ getTotalCalories() | number:'1.0-1' }} kcal</div>
+      </mat-card>
+      <mat-card class="total-card protein-card">
+        <div class="total-label">Protein</div>
+        <div class="total-value">{{ getTotalProtein() | number:'1.0-1' }}g</div>
+      </mat-card>
+      <mat-card class="total-card carbs-card">
+        <div class="total-label">Carbohydrates</div>
+        <div class="total-value">{{ getTotalCarbohydrates() | number:'1.0-1' }}g</div>
+      </mat-card>
+      <mat-card class="total-card fat-card">
+        <div class="total-label">Fat</div>
+        <div class="total-value">{{ getTotalFat() | number:'1.0-1' }}g</div>
+      </mat-card>
+      <mat-card class="total-card sugars-card" *ngIf="getTotalSugars() > 0">
+        <div class="total-label">Sugars</div>
+        <div class="total-value">{{ getTotalSugars() | number:'1.0-1' }}g</div>
+      </mat-card>
+      <mat-card class="total-card fiber-card" *ngIf="getTotalFiber() > 0">
+        <div class="total-label">Fiber</div>
+        <div class="total-value">{{ getTotalFiber() | number:'1.0-1' }}g</div>
+      </mat-card>
+    </div>
+  </div>
+  <div *ngIf="!loadingExistingMeal && dishes.length > 0" class="dishes-list">
+    <h4>Foods ({{ dishes.length }})</h4>
+    <mat-card *ngFor="let dish of dishes; let i = index" class="dish-card">
+      <div class="dish-info">
+        <div class="dish-name-line">
+          <span class="dish-name">{{ dish.name }}</span>
+          <span class="dish-macros-inline">
+            <span class="macro-item calories">{{ dish.calories | number:'1.0-1' }} kcal</span>
+            <span class="macro-item protein">P: {{ dish.protein | number:'1.0-1' }}g</span>
+            <span class="macro-item carbs">C: {{ dish.carbohydrates | number:'1.0-1' }}g</span>
+            <span class="macro-item fat">F: {{ dish.fat | number:'1.0-1' }}g</span>
+          </span>
+        </div>
+      </div>
+      <button mat-icon-button (click)="removeDish(i)" class="remove-dish-btn" matTooltip="Remove from meal">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || dishes.length === 0">
+    {{ loading ? 'Saving...' : 'Save Meal' }}
+  </button>
+</mat-dialog-actions>

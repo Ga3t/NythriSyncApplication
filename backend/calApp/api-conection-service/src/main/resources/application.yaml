@@ -1,0 +1,26 @@
+server:
+  port: 31598
+
+spring:
+  application:
+    name: api-connection-service
+  cache:
+    type: simple
+    cache-names: foodDataCache
+  datasource:
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 1
+      connection-timeout: 30000
+    url: ${DB_URL:jdbc:postgresql://caloryappdb.postgres.database.azure.com:5432/postgres?sslmode=require}
+    username: ${DB_USER:assdfytd}
+    password: ${DB_PASSWORD:QwertyWe12345!}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

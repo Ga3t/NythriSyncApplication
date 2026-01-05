@@ -1,0 +1,140 @@
+networks:
+  app-tier:
+    driver: bridge
+
+volumes:
+  postgres-data:
+
+services:
+  # # ---------------- Postgres ----------------
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: postgres
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: 1234
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   networks:
+  #     - app-tier
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 200M
+  #       reservations:
+  #         memory: 150M
+  #   command: postgres -c shared_buffers=64MB -c effective_cache_size=128MB -c maintenance_work_mem=32MB -c work_mem=4MB
+
+  # ---------------- User Service ----------------
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8091:31672"
+    environment:
+      DB_URL: jdbc:postgresql://caloryappdb.postgres.database.azure.com:5432/postgres?sslmode=require
+      DB_USER: assdfytd
+      DB_PASSWORD: QwertyWe12345!
+      JAVA_OPTS: "-Xmx128m -Xms64m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+    networks:
+      - app-tier
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 180M
+#        reservations:
+#          memory: 128M
+
+  # ---------------- Calorie Service ----------------
+  calorie-service:
+    build: ./calorie-service
+    container_name: calorie-service
+    ports:
+      - "8092:23897"
+    environment:
+      DB_URL: jdbc:postgresql://caloryappdb.postgres.database.azure.com:5432/postgres?sslmode=require
+      DB_USER: assdfytd
+      DB_PASSWORD: QwertyWe12345!
+      JAVA_OPTS: "-Xmx128m -Xms64m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+    networks:
+      - app-tier
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 180M
+#        reservations:
+#          memory: 128M
+
+  # ---------------- API Connection Service ----------------
+  api-connection-service:
+    build: ./api-conection-service
+    container_name: api-connection-service
+    ports:
+      - "8093:31598"
+    environment:
+      DB_URL: jdbc:postgresql://caloryappdb.postgres.database.azure.com:5432/postgres?sslmode=require
+      DB_USER: assdfytd
+      DB_PASSWORD: QwertyWe12345!
+      JAVA_OPTS: "-Xmx128m -Xms64m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+    networks:
+      - app-tier
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 180M
+#        reservations:
+#          memory: 128M
+
+  # ---------------- FatSecret Service ----------------
+  fatsecret-service:
+    build: ./FoodSecretApiConnection
+    container_name: fatsecret-service
+    ports:
+      - "8095:31897"
+    environment:
+      DB_URL: jdbc:postgresql://caloryappdb.postgres.database.azure.com:5432/postgres?sslmode=require
+      DB_USER: assdfytd
+      DB_PASSWORD: QwertyWe12345!
+      CACHE_TYPE: simple
+      JAVA_OPTS: "-Xmx128m -Xms64m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+      FATSECRET_CLIENT_ID: e06b193dae2d4c28a821e0079c933be8
+      FATSECRET_CLIENT_SECRET: d6f1cb06f45345d38afe76b9319d10d5
+      FATSECRET_SCOPE: basic
+      FATSECRET_TOKEN_URL: https://oauth.fatsecret.com/connect/token
+    networks:
+      - app-tier
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 180M
+#        reservations:
+#          memory: 128M
+
+  # ---------------- API Gateway ----------------
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8090:8090"
+    environment:
+      AUTH_SERVICE_URI: http://user-service:31672
+      LEDGER_SERVICE_URI: http://calorie-service:23897
+      PRODUCT_SERVICE_URI: http://api-connection-service:31598
+      FOODSECRET_SERVICE_URI: http://fatsecret-service:31897
+      JAVA_OPTS: "-Xmx128m -Xms64m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+    depends_on:
+      - user-service
+      - calorie-service
+      - api-connection-service
+    networks:
+      - app-tier
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 180M
+#        reservations:
+#          memory: 128M

@@ -1,0 +1,25 @@
+<div class="dashboard-wrapper">
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-items">
+      <a routerLink="/dashboard/main" routerLinkActive="active" class="nav-item">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/dashboard/calendar" routerLinkActive="active" class="nav-item">
+        <mat-icon>calendar_today</mat-icon>
+        <span>Calendar</span>
+      </a>
+      <a routerLink="/dashboard/analytics" routerLinkActive="active" class="nav-item">
+        <mat-icon>analytics</mat-icon>
+        <span>Analytics</span>
+      </a>
+      <a routerLink="/dashboard/profile" routerLinkActive="active" class="nav-item">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,124 @@
+.calendar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 500;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.month-card {
+  mat-card-content {
+    padding-top: 16px;
+  }
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 8px;
+    text-align: center;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  td {
+    padding: 4px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 60px;
+    vertical-align: top;
+
+    &.empty {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    &.green {
+      background-color: #4caf50;
+      color: white;
+      font-weight: 500;
+    }
+
+    &.transparent-green {
+      background-color: rgba(76, 175, 80, 0.3);
+    }
+
+    &.clickable {
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 1;
+        position: relative;
+      }
+    }
+  }
+}
+
+.day-cell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4px;
+
+  .day-number {
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .day-calories {
+    font-size: 10px;
+    margin-top: 2px;
+    font-weight: 500;
+
+    .green & {
+      color: white;
+    }
+
+    .transparent-green & {
+      color: #2e7d32;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

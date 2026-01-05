@@ -1,0 +1,21 @@
+<div class="add-water-dialog">
+  <h2 mat-dialog-title>Add Water</h2>
+  <mat-dialog-content>
+    <form [formGroup]="waterForm">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Amount (ml)</mat-label>
+        <input matInput type="number" formControlName="amount" required>
+        <mat-icon matPrefix>water_drop</mat-icon>
+        <mat-error *ngIf="waterForm.get('amount')?.hasError('required')">Amount is required</mat-error>
+        <mat-error *ngIf="waterForm.get('amount')?.hasError('min')">Minimum is 1ml</mat-error>
+        <mat-error *ngIf="waterForm.get('amount')?.hasError('max')">Maximum is 5000ml</mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="waterForm.invalid">
+      Add Water
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,64 @@
+server:
+  port: 31897
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+spring:
+  application:
+    name: foodsecret-api-connection
+  cache:
+    type: ${CACHE_TYPE:simple}
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP:}
+      group-id: ${KAFKA_GROUP_ID:food-analysis-group}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+  datasource:
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 1
+      connection-timeout: 30000
+    url: ${DB_URL:jdbc:postgresql://caloryappdb.postgres.database.azure.com:5432/postgres?sslmode=require}
+    username: ${DB_USER:assdfytd}
+    password: ${DB_PASSWORD:QwertyWe12345!}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  web:
+    resources:
+      add-mappings: false
+fatsecret:
+  oauth:
+    token-url: ${FATSECRET_TOKEN_URL:https://oauth.fatsecret.com/connect/token}
+    client-id: ${FATSECRET_CLIENT_ID:e06b193dae2d4c28a821e0079c933be8}
+    client-secret: ${FATSECRET_CLIENT_SECRET:d6f1cb06f45345d38afe76b9319d10d5}
+    scope: ${FATSECRET_SCOPE:basic}

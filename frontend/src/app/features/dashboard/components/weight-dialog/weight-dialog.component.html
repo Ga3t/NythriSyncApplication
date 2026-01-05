@@ -1,0 +1,46 @@
+<div class="weight-dialog">
+  <h2 mat-dialog-title>Enter Weight</h2>
+  <mat-dialog-content>
+    <div class="weight-input-container">
+      <div class="weight-display">
+        <form [formGroup]="weightForm">
+          <div class="weight-input-wrapper">
+            <input
+              type="number"
+              class="weight-input"
+              formControlName="weight"
+              min="0.1"
+              step="0.1"
+              autofocus
+            />
+            <span class="weight-unit">kg</span>
+          </div>
+        </form>
+      </div>
+      <p class="instruction-text">Enter your new weight.</p>
+      <div class="weight-warning" *ngIf="showLowWarning">
+        <mat-icon class="warning-icon">warning</mat-icon>
+        <div class="warning-text">
+          <strong>Warning:</strong> This weight may be an error. If this is correct, please consult a doctor immediately.
+        </div>
+      </div>
+      <div class="weight-warning" *ngIf="showHighWarning">
+        <mat-icon class="warning-icon">warning</mat-icon>
+        <div class="warning-text">
+          <strong>Warning:</strong> This weight exceeds 200 kg. If this is correct, please consult a doctor immediately.
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSubmit()" 
+      [disabled]="weightForm.invalid || currentWeight <= 0"
+    >
+      Save
+    </button>
+  </mat-dialog-actions>
+</div>

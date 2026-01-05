@@ -1,0 +1,111 @@
+<div class="profile-container">
+  <h1>User Profile</h1>
+  <div *ngIf="loading && !userInfo" class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="userInfo" class="profile-info">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Account Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-item">
+          <span class="label">Username:</span>
+          <span class="value">{{ userInfo.username }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Email:</span>
+          <span class="value">{{ userInfo.email }}</span>
+        </div>
+        <div class="info-item" *ngIf="userInfo.dailyCalorieGoal">
+          <span class="label">Daily Calorie Goal:</span>
+          <span class="value">{{ userInfo.dailyCalorieGoal | number:'1.0-0' }} kcal</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <mat-card class="profile-form-card">
+    <mat-card-header>
+      <mat-card-title>Personal Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Height (cm)</mat-label>
+            <input matInput type="number" formControlName="height">
+            <mat-icon matPrefix>height</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Weight (kg)</mat-label>
+            <input matInput type="number" formControlName="weight">
+            <mat-icon matPrefix>monitor_weight</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="birthDay" placeholder="Select your date of birth" [max]="maxDate" [min]="minDate">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-icon matPrefix>cake</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Sex</mat-label>
+            <mat-select formControlName="sex">
+              <mat-option value="MALE">Male</mat-option>
+              <mat-option value="FEMALE">Female</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>wc</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Activity Level</mat-label>
+            <mat-select formControlName="activityLevel">
+              <mat-option value="SEDENTARY">Sedentary</mat-option>
+              <mat-option value="LIGHTLY_ACTIVE">Lightly Active</mat-option>
+              <mat-option value="MODERATELY_ACTIVE">Moderately Active</mat-option>
+              <mat-option value="VERY_ACTIVE">Very Active</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>fitness_center</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Goal</mat-label>
+            <mat-select formControlName="goal">
+              <mat-option value="LOSE_WEIGHT">Lose Weight</mat-option>
+              <mat-option value="MAINTAIN_WEIGHT">Maintain Weight</mat-option>
+              <mat-option value="GAIN_WEIGHT">Gain Weight</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>track_changes</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || loading">
+            {{ detailsExist ? 'Update Profile' : 'Save Profile' }}
+          </button>
+          <button mat-stroked-button type="button" (click)="addWeight()" [disabled]="!profileForm.get('weight')?.value || loading">
+            Log Weight
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="settings-actions">
+        <button mat-stroked-button (click)="downloadApk()" class="download-button">
+          <mat-icon>phone_android</mat-icon>
+          <span>Download Mobile App</span>
+        </button>
+        <button mat-stroked-button (click)="toggleTheme()" class="theme-button">
+          <mat-icon>{{ currentTheme === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+          <span>Toggle Theme</span>
+        </button>
+        <button mat-stroked-button (click)="logout()" class="logout-button">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
