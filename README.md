@@ -133,7 +133,7 @@ Follow these step-by-step instructions to install the NythriSync mobile applicat
 #### Step 1: Download the APK File
 
 1. Click on the download link below:
-   **[Download NythriSync APK](androidApp/NytriSync/app/build/outputs/apk/debug/app-debug.apk)**
+   **[Download NythriSync APK](releases/NythriSync-debug.apk)**
 
 2. The download will start automatically
 3. Wait for the download to complete
