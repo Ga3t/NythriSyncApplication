@@ -1,10 +1,8 @@
-@file:OptIn(
+﻿@file:OptIn(
     androidx.compose.material3.ExperimentalMaterial3Api::class,
     androidx.camera.core.ExperimentalGetImage::class
 )
-
 package com.ga3t.nytrisync.ui.scan
-
 import android.Manifest
 import android.content.Context
 import android.util.Size
@@ -44,7 +42,6 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.min
-
 @Composable
 fun BarcodeScannerScreen(
     onDetected: (String) -> Unit,
@@ -52,34 +49,25 @@ fun BarcodeScannerScreen(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val cameraExecutor: ExecutorService = remember { Executors.newSingleThreadExecutor() }
-
     var hasPermission by remember { mutableStateOf<Boolean?>(null) }
     val permLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> hasPermission = granted }
-
     LaunchedEffect(Unit) { permLauncher.launch(Manifest.permission.CAMERA) }
-
     DisposableEffect(Unit) {
         onDispose {
             runCatching { cameraProviderFuture.get().unbindAll() }
             runCatching { cameraExecutor.shutdown() }
         }
     }
-
-
     var manualSheet by remember { mutableStateOf(false) }
     var manualCode by remember { mutableStateOf("") }
     var manualError by remember { mutableStateOf<String?>(null) }
-
-
     val frameWidthFraction = 0.8f
     val frameHeightDp: Dp = 200.dp
     val density = LocalDensity.current
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -145,8 +133,6 @@ fun BarcodeScannerScreen(
                 }
                 true -> {
                     var scanned by remember { mutableStateOf(false) }
-
-                    // Камера (подложка)
                     AndroidView(
                         modifier = Modifier.fillMaxSize(),
                         factory = { ctx: Context ->
@@ -154,16 +140,13 @@ fun BarcodeScannerScreen(
                                 implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                             }
                             val cameraProvider = cameraProviderFuture.get()
-
                             val preview = Preview.Builder().build().also {
                                 it.setSurfaceProvider(previewView.surfaceProvider)
                             }
-
                             val analysis = ImageAnalysis.Builder()
                                 .setTargetResolution(Size(1280, 720))
                                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                                 .build()
-
                             val opts = BarcodeScannerOptions.Builder()
                                 .setBarcodeFormats(
                                     Barcode.FORMAT_EAN_13,
@@ -173,7 +156,6 @@ fun BarcodeScannerScreen(
                                 )
                                 .build()
                             val scanner = BarcodeScanning.getClient(opts)
-
                             val analyzer = object : Analyzer {
                                 @androidx.camera.core.ExperimentalGetImage
                                 override fun analyze(imageProxy: ImageProxy) {
@@ -186,7 +168,6 @@ fun BarcodeScannerScreen(
                                     }
                                     val rotation = imageProxy.imageInfo.rotationDegrees
                                     val image = InputImage.fromMediaImage(mediaImage, rotation)
-
                                     scanner.process(image)
                                         .addOnSuccessListener { barcodes ->
                                             val code = barcodes.firstOrNull()?.rawValue
@@ -195,13 +176,11 @@ fun BarcodeScannerScreen(
                                                 onDetected(code)
                                             }
                                         }
-                                        .addOnFailureListener { /* ignore */ }
+                                        .addOnFailureListener {  }
                                         .addOnCompleteListener { imageProxy.close() }
                                 }
                             }
-
                             analysis.setAnalyzer(cameraExecutor, analyzer)
-
                             try {
                                 cameraProvider.unbindAll()
                                 cameraProvider.bindToLifecycle(
@@ -211,17 +190,13 @@ fun BarcodeScannerScreen(
                                     analysis
                                 )
                             } catch (_: Exception) {}
-
                             previewView
                         }
                     )
-
-                    // Маска + рамка (без BoxWithConstraints)
                     val frameHeightPx = with(density) { frameHeightDp.toPx() }
                     androidx.compose.foundation.Canvas(
                         modifier = Modifier
                             .fillMaxSize()
-                            // Нужен offscreen, чтобы BlendMode.Clear “вырезал” дырку
                             .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
                     ) {
                         val w = size.width
@@ -230,19 +205,13 @@ fun BarcodeScannerScreen(
                         val rectH = min(h, frameHeightPx)
                         val left = (w - rectW) / 2f
                         val top = (h - rectH) / 2f
-
-                        // Затемняем весь экран
                         drawRect(Color.Black.copy(alpha = 0.65f))
-
-                        // Вырезаем “окно” (дырку) под рамку
                         drawRect(
                             color = Color.Transparent,
                             topLeft = androidx.compose.ui.geometry.Offset(left, top),
                             size = androidx.compose.ui.geometry.Size(rectW, rectH),
                             blendMode = BlendMode.Clear
                         )
-
-                        // Белая рамка
                         drawRect(
                             color = Color.White,
                             topLeft = androidx.compose.ui.geometry.Offset(left, top),
@@ -254,8 +223,6 @@ fun BarcodeScannerScreen(
             }
         }
     }
-
-    // Bottom sheet: ручной ввод кода
     if (manualSheet) {
         ModalBottomSheet(
             onDismissRequest = { manualSheet = false }
@@ -295,7 +262,6 @@ fun BarcodeScannerScreen(
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.large
                     ) { Text("Cancel") }
-
                     Button(
                         onClick = {
                             if (manualCode.isBlank()) {

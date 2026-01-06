@@ -1,4 +1,4 @@
-export interface UserDetailsDto {
+﻿export interface UserDetailsDto {
   currentWeight: number;
   birthDay: string;
   sex: string;
@@ -7,7 +7,6 @@ export interface UserDetailsDto {
   wantedWeight: number;
   height: number;
 }
-
 export interface UpdateUserDetailsDto {
   height?: number;
   weight?: number;
@@ -16,20 +15,14 @@ export interface UpdateUserDetailsDto {
   activityLevel?: string;
   goal?: string;
 }
-
 export interface UserInfoResponse {
-  userId: number;
-  username: string;
-  email: string;
+  weight?: number;
   height?: number;
-  currentWeight?: number;
-  age?: number;
   sex?: string;
-  activityLevel?: string;
-  goal?: string;
-  dailyCalorieGoal?: number;
+  activity_type?: string;
+  birthday_date?: string;
+  goalType?: string;
 }
-
 export interface UserDetailsResponse {
   height: number;
   weight: number;
@@ -39,6 +32,3 @@ export interface UserDetailsResponse {
   goal: string;
   dailyCalorieGoal: number;
 }
-
-
-

@@ -1,10 +1,7 @@
-package com.ga3t.nytrisync.data.remote
-
-
+﻿package com.ga3t.nytrisync.data.remote
 import okhttp3.Interceptor
 import okhttp3.Response as OkHttpResponse
 import com.ga3t.nytrisync.data.local.TokenStorage
-
 class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): OkHttpResponse {
         val req = chain.request()

@@ -1,7 +1,5 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
+﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 package com.ga3t.nytrisync.ui.meal
-
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -37,10 +35,8 @@ import com.ga3t.nytrisync.data.model.MealType
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.min
-
 private fun BigDecimal?.fmt(): String =
     this?.stripTrailingZeros()?.toPlainString() ?: "—"
-
 @Composable
 fun MealBuilderScreen(
     mealType: MealType,
@@ -53,14 +49,12 @@ fun MealBuilderScreen(
 ) {
     val vm: MealBuilderViewModel = viewModel(factory = MealBuilderViewModel.factory(mealType, date))
     val ui = vm.ui
-
     LaunchedEffect(scannedBarcode) {
         if (!scannedBarcode.isNullOrBlank()) {
             vm.onBarcodeDetected(scannedBarcode)
             clearScannedBarcode()
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -86,7 +80,6 @@ fun MealBuilderScreen(
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.large
                     ) { Text("Cancel") }
-
                     Button(
                         onClick = { vm.save { onSaved() } },
                         enabled = !ui.isLoading && ui.items.isNotEmpty(),
@@ -108,8 +101,6 @@ fun MealBuilderScreen(
         }
     ) { padding ->
         Box(Modifier.padding(padding)) {
-
-
             Column(
                 Modifier
                     .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -134,12 +125,10 @@ fun MealBuilderScreen(
                         Icon(Icons.Outlined.QrCodeScanner, contentDescription = "Scan barcode")
                     }
                 }
-
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = { vm.search(0) }, enabled = !ui.isSearching) { Text("Search") }
                     OutlinedButton(onClick = { vm.showCustomFood() }) { Text("Add custom") }
                 }
-
                 ElevatedCard {
                     Column(Modifier.padding(12.dp)) {
                         Text(
@@ -149,10 +138,7 @@ fun MealBuilderScreen(
                         )
                     }
                 }
-
-
                 SummaryMacros(ui)
-
                 if (ui.items.isNotEmpty()) {
                     Text("Added items", style = MaterialTheme.typography.titleMedium)
                     ui.items.forEachIndexed { index, it ->
@@ -173,13 +159,10 @@ fun MealBuilderScreen(
                         }
                     }
                 }
-
                 if (ui.error != null) {
                     Text(ui.error!!, color = MaterialTheme.colorScheme.error)
                 }
             }
-
-
             if (ui.isSearching || ui.results.isNotEmpty()) {
                 ResultsOverlay(
                     query = ui.query,
@@ -196,8 +179,6 @@ fun MealBuilderScreen(
                     onClose = { vm.clearResults() }
                 )
             }
-
-
             ui.selected?.let { s ->
                 ModalBottomSheet(onDismissRequest = { vm.clearSelection() }) {
                         Column(
@@ -208,7 +189,6 @@ fun MealBuilderScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(s.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-
                         OutlinedTextField(
                             value = ui.gramsInput,
                             onValueChange = { vm.setGramsInput(it) },
@@ -216,7 +196,6 @@ fun MealBuilderScreen(
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
-
                         val g = ui.gramsInput.toBigDecimalOrNull() ?: BigDecimal.ZERO
                         val ratio = if (g > BigDecimal.ZERO) g.divide(BigDecimal(100), 4, RoundingMode.HALF_UP) else BigDecimal.ZERO
                         val p = s.protein.multiply(ratio)
@@ -224,37 +203,30 @@ fun MealBuilderScreen(
                         val f = s.fat.multiply(ratio)
                         val sugar = (s.sugar ?: BigDecimal.ZERO).multiply(ratio)
                         val cholesterol = (s.cholesterol ?: BigDecimal.ZERO).multiply(ratio)
-                        
-                        // Calculate calories from macros
                         val proteinCal = p.multiply(BigDecimal(4))
                         val carbsCal = c.multiply(BigDecimal(4))
                         val fatCal = f.multiply(BigDecimal(9))
                         val totalCal = proteinCal.add(carbsCal).add(fatCal)
-                        
                         val norms = ui.dailyNorms
-                        
-                        // Calculate percentages of daily norm
-                        val proteinPercent = if (norms.protein > BigDecimal.ZERO) 
-                            p.multiply(BigDecimal(100)).divide(norms.protein, 2, RoundingMode.HALF_UP) 
+                        val proteinPercent = if (norms.protein > BigDecimal.ZERO)
+                            p.multiply(BigDecimal(100)).divide(norms.protein, 2, RoundingMode.HALF_UP)
                         else BigDecimal.ZERO
-                        val carbsPercent = if (norms.carbs > BigDecimal.ZERO) 
-                            c.multiply(BigDecimal(100)).divide(norms.carbs, 2, RoundingMode.HALF_UP) 
+                        val carbsPercent = if (norms.carbs > BigDecimal.ZERO)
+                            c.multiply(BigDecimal(100)).divide(norms.carbs, 2, RoundingMode.HALF_UP)
                         else BigDecimal.ZERO
-                        val fatPercent = if (norms.fat > BigDecimal.ZERO) 
-                            f.multiply(BigDecimal(100)).divide(norms.fat, 2, RoundingMode.HALF_UP) 
+                        val fatPercent = if (norms.fat > BigDecimal.ZERO)
+                            f.multiply(BigDecimal(100)).divide(norms.fat, 2, RoundingMode.HALF_UP)
                         else BigDecimal.ZERO
-                        val sugarPercent = if (norms.sugar > BigDecimal.ZERO) 
-                            sugar.multiply(BigDecimal(100)).divide(norms.sugar, 2, RoundingMode.HALF_UP) 
+                        val sugarPercent = if (norms.sugar > BigDecimal.ZERO)
+                            sugar.multiply(BigDecimal(100)).divide(norms.sugar, 2, RoundingMode.HALF_UP)
                         else BigDecimal.ZERO
-                        val cholesterolPercent = if (norms.cholesterol > BigDecimal.ZERO) 
-                            cholesterol.multiply(BigDecimal(100)).divide(norms.cholesterol, 2, RoundingMode.HALF_UP) 
+                        val cholesterolPercent = if (norms.cholesterol > BigDecimal.ZERO)
+                            cholesterol.multiply(BigDecimal(100)).divide(norms.cholesterol, 2, RoundingMode.HALF_UP)
                         else BigDecimal.ZERO
-
                         ElevatedCard {
                             Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                                 Text("For ${g.stripTrailingZeros().toPlainString()} g", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                                 Text("Calories: ${totalCal.stripTrailingZeros().toPlainString()} kcal", style = MaterialTheme.typography.bodyMedium)
-                                
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -281,7 +253,6 @@ fun MealBuilderScreen(
                                         modifier = Modifier.weight(1f)
                                     )
                                 }
-                                
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -304,7 +275,6 @@ fun MealBuilderScreen(
                                 }
                             }
                         }
-
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             OutlinedButton(onClick = { vm.clearSelection() }) { Text("Close") }
                             Button(onClick = { vm.addSelectedFood() }) { Text("Add to meal") }
@@ -313,7 +283,6 @@ fun MealBuilderScreen(
                     }
                 }
             }
-
             if (ui.showCustomFood) {
                 ModalBottomSheet(onDismissRequest = { vm.hideCustomFood() }) {
                     CustomFoodInputSheet(
@@ -324,61 +293,102 @@ fun MealBuilderScreen(
                     )
                 }
             }
-
             ui.selectedBarcode?.let { b ->
                 ModalBottomSheet(onDismissRequest = { vm.clearBarcodeSelection() }) {
-                    Column(
+                        Column(
                         Modifier
                             .padding(16.dp)
                             .imePadding()
                             .navigationBarsPadding(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(b.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-
+                        Text(b.name.lowercase().replaceFirstChar { it.titlecase() }, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                         OutlinedTextField(
                             value = ui.barcodeGramsInput,
                             onValueChange = { vm.setBarcodeGramsInput(it) },
                             label = { Text("Amount, g") },
                             singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
-
                         val g = ui.barcodeGramsInput.toBigDecimalOrNull() ?: BigDecimal.ZERO
                         val ratio = if (g > BigDecimal.ZERO) g.divide(BigDecimal(100), 4, RoundingMode.HALF_UP) else BigDecimal.ZERO
                         val p = b.protein.multiply(ratio)
                         val c = b.carbohydrates.multiply(ratio)
                         val f = b.fat.multiply(ratio)
-                        val cal = f.multiply(BigDecimal(9)).add(c.multiply(BigDecimal(4))).add(p.multiply(BigDecimal(4)))
-
+                        val sugar = (b.sugar ?: BigDecimal.ZERO).multiply(ratio)
+                        val cholesterol = (b.cholesterol ?: BigDecimal.ZERO).multiply(ratio)
+                        val proteinCal = p.multiply(BigDecimal(4))
+                        val carbsCal = c.multiply(BigDecimal(4))
+                        val fatCal = f.multiply(BigDecimal(9))
+                        val totalCal = proteinCal.add(carbsCal).add(fatCal)
+                        val norms = ui.dailyNorms
+                        val proteinPercent = if (norms.protein > BigDecimal.ZERO)
+                            p.multiply(BigDecimal(100)).divide(norms.protein, 2, RoundingMode.HALF_UP)
+                        else BigDecimal.ZERO
+                        val carbsPercent = if (norms.carbs > BigDecimal.ZERO)
+                            c.multiply(BigDecimal(100)).divide(norms.carbs, 2, RoundingMode.HALF_UP)
+                        else BigDecimal.ZERO
+                        val fatPercent = if (norms.fat > BigDecimal.ZERO)
+                            f.multiply(BigDecimal(100)).divide(norms.fat, 2, RoundingMode.HALF_UP)
+                        else BigDecimal.ZERO
+                        val sugarPercent = if (norms.sugar > BigDecimal.ZERO)
+                            sugar.multiply(BigDecimal(100)).divide(norms.sugar, 2, RoundingMode.HALF_UP)
+                        else BigDecimal.ZERO
+                        val cholesterolPercent = if (norms.cholesterol > BigDecimal.ZERO)
+                            cholesterol.multiply(BigDecimal(100)).divide(norms.cholesterol, 2, RoundingMode.HALF_UP)
+                        else BigDecimal.ZERO
                         ElevatedCard {
-                            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Text("For ${g.stripTrailingZeros().toPlainString()} g", fontWeight = FontWeight.Medium)
-                                Text("Calories: ${cal.stripTrailingZeros().toPlainString()} kcal")
-                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    Text("Carbs: ${c.stripTrailingZeros().toPlainString()} g")
-                                    Text("Protein: ${p.stripTrailingZeros().toPlainString()} g")
-                                    Text("Fat: ${f.stripTrailingZeros().toPlainString()} g")
+                            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                Text("For ${g.stripTrailingZeros().toPlainString()} g", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                                Text("Calories: ${totalCal.stripTrailingZeros().toPlainString()} kcal", style = MaterialTheme.typography.bodyMedium)
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    MacroSemiCircle(
+                                        title = "Protein",
+                                        grams = p,
+                                        percent = proteinPercent,
+                                        color = Color(0xFF42A5F5),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    MacroSemiCircle(
+                                        title = "Carbs",
+                                        grams = c,
+                                        percent = carbsPercent,
+                                        color = Color(0xFF7CB342),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    MacroSemiCircle(
+                                        title = "Fat",
+                                        grams = f,
+                                        percent = fatPercent,
+                                        color = Color(0xFFEF5350),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    MacroSemiCircle(
+                                        title = "Sugar",
+                                        grams = sugar,
+                                        percent = sugarPercent,
+                                        color = Color(0xFFFFA726),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    MacroSemiCircle(
+                                        title = "Cholesterol",
+                                        grams = cholesterol,
+                                        percent = cholesterolPercent,
+                                        color = Color(0xFFAB47BC),
+                                        modifier = Modifier.weight(1f),
+                                        unit = "mg"
+                                    )
                                 }
                             }
                         }
-
-                        Text("Per 100 g (from barcode)", style = MaterialTheme.typography.labelLarge)
-                        val caloriesBy449 = b.fat.multiply(BigDecimal(9))
-                            .add(b.carbohydrates.multiply(BigDecimal(4)))
-                            .add(b.protein.multiply(BigDecimal(4)))
-                            .stripTrailingZeros()
-                            .toPlainString()
-                        MacroTable(
-                            calories = caloriesBy449,
-                            protein = b.protein.fmt(),
-                            carbs = b.carbohydrates.fmt(),
-                            fat = b.fat.fmt(),
-                            sugar = b.sugar.fmt(),
-                            fiber = b.fiber.fmt(),
-                            cholesterol = b.cholesterol.fmt()
-                        )
-
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             OutlinedButton(onClick = { vm.clearBarcodeSelection() }) { Text("Close") }
                             Button(onClick = { vm.addBarcodeSelected() }) { Text("Add to meal") }
@@ -390,7 +400,6 @@ fun MealBuilderScreen(
         }
     }
 }
-
 @Composable
 private fun ResultRow(item: FoodSearchResponse.FoodItem, onClick: () -> Unit) {
     ElevatedCard(
@@ -408,7 +417,6 @@ private fun ResultRow(item: FoodSearchResponse.FoodItem, onClick: () -> Unit) {
         }
     }
 }
-
 @Composable
 private fun ResultsOverlay(
     query: String,
@@ -422,7 +430,6 @@ private fun ResultsOverlay(
     onClose: () -> Unit
 ) {
     val listState = rememberLazyListState()
-
     LaunchedEffect(items.size, isLoading) {
         snapshotFlow {
             val last = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
@@ -432,7 +439,6 @@ private fun ResultsOverlay(
             if (!isLoading && totalCount > 0 && last >= totalCount - 5) onLoadMore()
         }
     }
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface,
@@ -459,7 +465,6 @@ private fun ResultsOverlay(
                 TextButton(onClick = onClose) { Text("Close") }
             }
             Divider()
-
             LazyColumn(
                 state = listState,
                 contentPadding = PaddingValues(12.dp),
@@ -484,13 +489,11 @@ private fun ResultsOverlay(
         }
     }
 }
-
 @Composable
 private fun SummaryMacros(ui: MealBuilderUiState) {
     val t = ui.totals
     val totalShare = listOf(t.carbohydrates, t.protein, t.fat, t.sugars, t.fiber)
         .fold(BigDecimal.ZERO) { acc, x -> acc + x }
-
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             MacroShareCard(
@@ -534,7 +537,6 @@ private fun SummaryMacros(ui: MealBuilderUiState) {
         CholesterolCard(value = t.cholesterol)
     }
 }
-
 @Composable
 private fun MacroShareCard(
     title: String,
@@ -547,7 +549,6 @@ private fun MacroShareCard(
         grams.multiply(BigDecimal(100)).divide(total, 2, RoundingMode.HALF_UP)
     else BigDecimal.ZERO
     val ratio = percent.toFloat().coerceIn(0f, 100f) / 100f
-
     ElevatedCard(modifier = modifier.heightIn(min = 140.dp)) {
         Box(
             Modifier
@@ -561,7 +562,6 @@ private fun MacroShareCard(
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.align(Alignment.TopCenter)
             )
-
             Box(
                 modifier = Modifier
                     .size(64.dp)
@@ -581,7 +581,6 @@ private fun MacroShareCard(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-
             Text(
                 text = "${grams.stripTrailingZeros().toPlainString()} g",
                 style = MaterialTheme.typography.labelMedium,
@@ -591,7 +590,6 @@ private fun MacroShareCard(
         }
     }
 }
-
 @Composable
 private fun CholesterolCard(value: BigDecimal) {
     ElevatedCard(modifier = Modifier.fillMaxWidth()) {
@@ -607,7 +605,6 @@ private fun CholesterolCard(value: BigDecimal) {
         }
     }
 }
-
 @Composable
 private fun SemiCircleProgress(
     progress: Float,
@@ -621,7 +618,6 @@ private fun SemiCircleProgress(
         animationSpec = tween(durationMillis = 700),
         label = "semicircle-progress"
     ).value
-
     Box(modifier = Modifier.size(size), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val strokePx = thickness.toPx()
@@ -632,8 +628,6 @@ private fun SemiCircleProgress(
                 (canvasSize.width - diameter) / 2f,
                 0f
             )
-
-            // Draw track (full semicircle)
             drawArc(
                 color = trackColor,
                 startAngle = 180f,
@@ -643,8 +637,6 @@ private fun SemiCircleProgress(
                 size = arcSize,
                 topLeft = topLeft
             )
-
-            // Draw progress (partial semicircle)
             drawArc(
                 color = color,
                 startAngle = 180f,
@@ -657,7 +649,6 @@ private fun SemiCircleProgress(
         }
     }
 }
-
 @Composable
 private fun MacroSemiCircle(
     title: String,
@@ -697,7 +688,6 @@ private fun MacroSemiCircle(
         )
     }
 }
-
 @Composable
 private fun MacroTable(
     calories: String,
@@ -718,7 +708,6 @@ private fun MacroTable(
         Text("Cholesterol: $cholesterol mg")
     }
 }
-
 @Composable
 private fun CustomFoodInputSheet(
     input: CustomFoodInput,
@@ -734,7 +723,6 @@ private fun CustomFoodInputSheet(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text("Add custom food", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-        
         OutlinedTextField(
             value = input.name,
             onValueChange = { onInputChange(input.copy(name = it)) },
@@ -742,7 +730,6 @@ private fun CustomFoodInputSheet(
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        
         OutlinedTextField(
             value = input.grams,
             onValueChange = { onInputChange(input.copy(grams = it.filter { c -> c.isDigit() || c == '.' })) },
@@ -751,7 +738,6 @@ private fun CustomFoodInputSheet(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
         )
-        
         OutlinedTextField(
             value = input.calories,
             onValueChange = { onInputChange(input.copy(calories = it.filter { c -> c.isDigit() || c == '.' })) },
@@ -760,7 +746,6 @@ private fun CustomFoodInputSheet(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
         )
-        
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
                 value = input.protein,
@@ -779,7 +764,6 @@ private fun CustomFoodInputSheet(
                 modifier = Modifier.weight(1f)
             )
         }
-        
         OutlinedTextField(
             value = input.carbohydrates,
             onValueChange = { onInputChange(input.copy(carbohydrates = it.filter { c -> c.isDigit() || c == '.' })) },
@@ -788,7 +772,6 @@ private fun CustomFoodInputSheet(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
         )
-        
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
                 value = input.sugar,
@@ -807,7 +790,6 @@ private fun CustomFoodInputSheet(
                 modifier = Modifier.weight(1f)
             )
         }
-        
         OutlinedTextField(
             value = input.cholesterol,
             onValueChange = { onInputChange(input.copy(cholesterol = it.filter { c -> c.isDigit() || c == '.' })) },
@@ -816,7 +798,6 @@ private fun CustomFoodInputSheet(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth()
         )
-        
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = onCancel, modifier = Modifier.weight(1f)) { Text("Cancel") }
             Button(onClick = onAdd, modifier = Modifier.weight(1f)) { Text("Add") }

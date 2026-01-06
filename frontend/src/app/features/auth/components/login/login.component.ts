@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ApiService } from '../../../../core/services/api.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -17,7 +16,6 @@ export class LoginComponent implements OnInit {
   returnUrl = '';
   hidePassword = true;
   activeTab: 'login' | 'signup' = 'login';
-
   mainText = 'Eat consciously. Live easily.';
   subText = 'Your personal food diary that turns self-care into a simple habit.';
   displayedMainText = '';
@@ -25,7 +23,6 @@ export class LoginComponent implements OnInit {
   mainTextComplete = false;
   subTypingComplete = false;
   typingComplete = false;
-
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -40,21 +37,18 @@ export class LoginComponent implements OnInit {
         login: ['', [Validators.required]],
         password: ['', [Validators.required, Validators.minLength(6)]]
       });
-      
       this.registrationForm = this.fb.group({
         username: ['', [Validators.required, Validators.minLength(3)]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]]
       }, { validators: this.passwordMatchValidator });
-      
       console.log('LoginComponent forms created successfully');
     } catch (error) {
       console.error('Error creating forms:', error);
       throw error;
     }
   }
-
   passwordMatchValidator(form: AbstractControl) {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
@@ -64,7 +58,6 @@ export class LoginComponent implements OnInit {
     }
     return null;
   }
-
   ngOnInit(): void {
     console.log('LoginComponent ngOnInit called');
     console.log('LoginForm status:', this.loginForm ? 'exists' : 'missing');
@@ -78,9 +71,7 @@ export class LoginComponent implements OnInit {
       this.startTypewriter();
     }
   }
-
   startTypewriter(): void {
-
     let i = 0;
     const typeMain = () => {
       if (i < this.mainText.length) {
@@ -93,13 +84,11 @@ export class LoginComponent implements OnInit {
         setTimeout(() => {
           this.typingComplete = false;
         }, 100);
-
         setTimeout(() => this.typeSubText(), 500);
       }
     };
     setTimeout(typeMain, 500);
   }
-
   typeSubText(): void {
     this.displayedSubText = '';
     let i = 0;
@@ -114,7 +103,6 @@ export class LoginComponent implements OnInit {
     };
     setTimeout(typeSub, 300);
   }
-
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.loading = true;
@@ -132,40 +120,32 @@ export class LoginComponent implements OnInit {
       });
     }
   }
-
   checkUserDetailsAndNavigate(): void {
     this.apiService.userDetailsExists().subscribe({
       next: (exists) => {
         if (!exists) {
-
           this.router.navigate(['/login/setup-profile']);
         } else {
-
           this.router.navigate([this.returnUrl]);
         }
       },
       error: () => {
-
         this.router.navigate([this.returnUrl]);
       }
     });
   }
-
   navigateToRegister(): void {
     this.activeTab = 'signup';
   }
-
   navigateToLogin(): void {
     this.activeTab = 'login';
   }
-
   onRegisterSubmit(): void {
     if (this.registrationForm.valid) {
       this.loading = true;
       const { confirmPassword, ...userData } = this.registrationForm.value;
       this.authService.register(userData).subscribe({
         next: () => {
-
           this.authService.login({
             login: userData.username,
             password: userData.password
@@ -193,5 +173,3 @@ export class LoginComponent implements OnInit {
     }
   }
 }
-
-

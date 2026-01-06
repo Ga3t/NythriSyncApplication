@@ -23,6 +23,13 @@ html, body {
   --accent-color: #4caf50;
   --warn-color: #f44336;
   --success-color: #4caf50;
+  
+  // Material Design button color variables
+  --mdc-filled-button-container-color: #4caf50 !important;
+  --mdc-filled-button-label-text-color: white !important;
+  --mdc-outlined-button-label-text-color: #4caf50 !important;
+  --mdc-outlined-button-outline-color: #4caf50 !important;
+  --mdc-text-button-label-text-color: #4caf50 !important;
 }
 
 input,
@@ -1133,6 +1140,272 @@ body.dark-theme {
   }
 }
 
+// Global button styles - make all buttons green (except warn buttons)
+::ng-deep {
+  // Target all Material Design raised buttons - MDC classes
+  .mat-mdc-raised-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button.mat-mdc-raised-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button[mat-raised-button]:not(:disabled):not([color="warn"]),
+  .mdc-button--raised:not(:disabled):not(.mat-warn):not([color="warn"]) {
+    background-color: #4caf50 !important;
+    color: white !important;
+    
+    .mdc-button__ripple {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    &:hover {
+      background-color: #388e3c !important;
+    }
+    
+    &:focus {
+      background-color: #388e3c !important;
+    }
+  }
+  
+  // Target all Material Design flat buttons
+  .mat-mdc-flat-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button.mat-mdc-flat-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button[mat-flat-button]:not(:disabled):not([color="warn"]),
+  .mdc-button:not(.mdc-button--raised):not(.mdc-button--outlined):not(:disabled):not(.mat-warn):not([color="warn"]) {
+    background-color: #4caf50 !important;
+    color: white !important;
+    
+    &:hover {
+      background-color: #388e3c !important;
+    }
+  }
+  
+  // Target all Material Design outlined/stroked buttons
+  .mat-mdc-outlined-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button.mat-mdc-outlined-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button[mat-stroked-button]:not(:disabled):not([color="warn"]),
+  .mdc-button--outlined:not(:disabled):not(.mat-warn):not([color="warn"]) {
+    border-color: #4caf50 !important;
+    color: #4caf50 !important;
+    
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #4caf50 !important;
+    }
+    
+    &:hover {
+      background-color: rgba(76, 175, 80, 0.1) !important;
+    }
+  }
+  
+  // Target all Material Design basic buttons
+  .mat-mdc-button:not(:disabled):not([mat-icon-button]):not([mat-fab]):not([mat-mini-fab]):not(.mat-warn):not([color="warn"]),
+  button.mat-mdc-button:not(:disabled):not([mat-icon-button]):not([mat-fab]):not([mat-mini-fab]):not(.mat-warn):not([color="warn"]),
+  button[mat-button]:not(:disabled):not([mat-icon-button]):not([mat-fab]):not([mat-mini-fab]):not([color="warn"]) {
+    color: #4caf50 !important;
+    
+    &:hover {
+      background-color: rgba(76, 175, 80, 0.1) !important;
+    }
+  }
+  
+  // Target all Material Design icon buttons
+  .mat-mdc-icon-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button.mat-mdc-icon-button:not(:disabled):not(.mat-warn):not([color="warn"]),
+  button[mat-icon-button]:not(:disabled):not([color="warn"]),
+  .mdc-icon-button:not(:disabled):not(.mat-warn):not([color="warn"]) {
+    color: #4caf50 !important;
+    
+    .mat-icon,
+    mat-icon {
+      color: #4caf50 !important;
+    }
+    
+    &:hover {
+      background-color: rgba(76, 175, 80, 0.1) !important;
+    }
+  }
+  
+  // Primary color buttons - force green
+  .mat-mdc-raised-button.mat-primary:not(:disabled),
+  button.mat-mdc-raised-button.mat-primary:not(:disabled),
+  button[mat-raised-button][color="primary"]:not(:disabled),
+  .mat-mdc-raised-button[color="primary"]:not(:disabled) {
+    background-color: #4caf50 !important;
+    color: white !important;
+    
+    .mdc-button__ripple {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    &:hover {
+      background-color: #388e3c !important;
+    }
+  }
+  
+  // Disabled buttons (not warn)
+  .mat-mdc-raised-button:disabled:not(.mat-warn):not([color="warn"]),
+  button.mat-mdc-raised-button:disabled:not([color="warn"]),
+  button[mat-raised-button]:disabled:not([color="warn"]),
+  .mat-mdc-flat-button:disabled:not(.mat-warn):not([color="warn"]),
+  button[mat-flat-button]:disabled:not([color="warn"]) {
+    background-color: rgba(76, 175, 80, 0.3) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+  
+  // Override any white/transparent backgrounds on buttons
+  button:not(.mat-warn):not([color="warn"]) {
+    &[mat-raised-button],
+    &[mat-flat-button],
+    &.mat-mdc-raised-button,
+    &.mat-mdc-flat-button {
+      background-color: #4caf50 !important;
+      color: white !important;
+    }
+    
+    &[mat-stroked-button],
+    &[mat-button],
+    &.mat-mdc-outlined-button,
+    &.mat-mdc-button {
+      &:not([mat-icon-button]):not([mat-fab]):not([mat-mini-fab]) {
+        color: #4caf50 !important;
+      }
+    }
+  }
+  
+  // Direct MDC button element overrides
+  .mdc-button {
+    &:not(.mat-warn):not([color="warn"]) {
+      &.mdc-button--raised,
+      &.mat-mdc-raised-button {
+        background-color: #4caf50 !important;
+        color: white !important;
+      }
+      
+      &:not(.mdc-button--raised):not(.mdc-button--outlined) {
+        background-color: #4caf50 !important;
+        color: white !important;
+      }
+    }
+  }
+  
+  // Override Material theme variables for buttons - set at multiple levels
+  :root,
+  body,
+  body.light-theme,
+  body.dark-theme {
+    --mdc-filled-button-container-color: #4caf50 !important;
+    --mdc-filled-button-label-text-color: white !important;
+    --mdc-outlined-button-label-text-color: #4caf50 !important;
+    --mdc-outlined-button-outline-color: #4caf50 !important;
+    --mdc-text-button-label-text-color: #4caf50 !important;
+  }
+  
+  .mat-mdc-raised-button,
+  .mat-mdc-flat-button,
+  button[mat-raised-button],
+  button[mat-flat-button] {
+    --mdc-filled-button-container-color: #4caf50 !important;
+    --mdc-filled-button-label-text-color: white !important;
+  }
+  
+  .mat-mdc-outlined-button,
+  button[mat-stroked-button] {
+    --mdc-outlined-button-label-text-color: #4caf50 !important;
+    --mdc-outlined-button-outline-color: #4caf50 !important;
+  }
+  
+  .mat-mdc-button,
+  button[mat-button] {
+    --mdc-text-button-label-text-color: #4caf50 !important;
+  }
+  
+  // Force background on all button elements that might be white/transparent
+  button.mdc-button:not(.mat-warn):not([color="warn"]) {
+    &.mdc-button--raised,
+    &.mat-mdc-raised-button {
+      background-color: #4caf50 !important;
+      background: #4caf50 !important;
+      color: white !important;
+    }
+  }
+  
+  // Catch-all for any button with Material classes
+  [class*="mdc-button"]:not(.mat-warn):not([color="warn"]) {
+    &[class*="raised"],
+    &[class*="Raised"] {
+      background-color: #4caf50 !important;
+      background: #4caf50 !important;
+      color: white !important;
+    }
+  }
+  
+  // Ultimate catch-all - target ALL buttons except warn
+  button:not(.mat-warn):not([color="warn"]):not(.logout-button) {
+    &[mat-raised-button],
+    &[mat-flat-button],
+    &[mat-button]:not([mat-icon-button]):not([mat-fab]):not([mat-mini-fab]),
+    &.mat-mdc-raised-button,
+    &.mat-mdc-flat-button,
+    &.mat-mdc-button:not(.mat-mdc-icon-button):not(.mat-mdc-fab):not(.mat-mdc-mini-fab) {
+      background-color: #4caf50 !important;
+      background: #4caf50 !important;
+      color: white !important;
+      border: none !important;
+    }
+    
+    &[mat-stroked-button],
+    &.mat-mdc-outlined-button {
+      border: 1px solid #4caf50 !important;
+      border-color: #4caf50 !important;
+      color: #4caf50 !important;
+      background-color: transparent !important;
+    }
+    
+    &[mat-icon-button],
+    &.mat-mdc-icon-button {
+      color: #4caf50 !important;
+      
+      .mat-icon,
+      mat-icon {
+        color: #4caf50 !important;
+      }
+    }
+  }
+}
 
+// Additional global button styles outside ng-deep for maximum coverage
+button[mat-raised-button]:not(.mat-warn):not([color="warn"]),
+button.mat-mdc-raised-button:not(.mat-warn):not([color="warn"]),
+.mdc-button--raised:not(.mat-warn):not([color="warn"]) {
+  background-color: #4caf50 !important;
+  background: #4caf50 !important;
+  color: white !important;
+}
 
+button[mat-flat-button]:not(.mat-warn):not([color="warn"]),
+button.mat-mdc-flat-button:not(.mat-warn):not([color="warn"]) {
+  background-color: #4caf50 !important;
+  background: #4caf50 !important;
+  color: white !important;
+}
+
+button[mat-stroked-button]:not(.mat-warn):not([color="warn"]),
+button.mat-mdc-outlined-button:not(.mat-warn):not([color="warn"]),
+.mdc-button--outlined:not(.mat-warn):not([color="warn"]) {
+  border-color: #4caf50 !important;
+  color: #4caf50 !important;
+}
+
+button[mat-button]:not([mat-icon-button]):not(.mat-warn):not([color="warn"]),
+button.mat-mdc-button:not(.mat-mdc-icon-button):not(.mat-warn):not([color="warn"]) {
+  color: #4caf50 !important;
+}
+
+button[mat-icon-button]:not(.mat-warn):not([color="warn"]),
+button.mat-mdc-icon-button:not(.mat-warn):not([color="warn"]) {
+  color: #4caf50 !important;
+  
+  .mat-icon,
+  mat-icon {
+    color: #4caf50 !important;
+  }
+}
 

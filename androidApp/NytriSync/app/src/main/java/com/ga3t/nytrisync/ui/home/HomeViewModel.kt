@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.home
-
+﻿package com.ga3t.nytrisync.ui.home
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,7 +11,6 @@ import com.ga3t.nytrisync.data.repository.CalorieRepository
 import com.ga3t.nytrisync.data.repository.UserDetailsRepository
 import kotlinx.coroutines.launch
 import java.util.Calendar
-
 data class HomeUiState(
     val loading: Boolean = true,
     val error: String? = null,
@@ -32,19 +30,15 @@ data class HomeUiState(
         }
     }
 }
-
 class HomeViewModel(
     private val calorieRepo: CalorieRepository,
     private val detailsRepo: UserDetailsRepository
 ) : ViewModel() {
-
     var ui by mutableStateOf(HomeUiState())
         private set
-
     init {
         refresh()
     }
-
     fun refresh() = viewModelScope.launch {
         ui = ui.copy(loading = true, error = null, requireOnboarding = false)
         val existsRes = detailsRepo.exists()
@@ -57,15 +51,12 @@ class HomeViewModel(
             ui = ui.copy(loading = false, requireOnboarding = true, error = "Please complete your profile")
             return@launch
         }
-
         val mainRes = calorieRepo.getMainPage()
         ui = ui.copy(loading = false)
         mainRes.onSuccess { data -> ui = ui.copy(data = data, error = null) }
             .onFailure { e -> ui = ui.copy(error = e.message ?: "Load failed") }
     }
-
     fun clearOnboardingFlag() { ui = ui.copy(requireOnboarding = false) }
-
     fun addWater(amountMl: Int) = viewModelScope.launch {
         if (amountMl <= 0) return@launch
         val date = java.time.LocalDate.now().toString()
@@ -76,7 +67,6 @@ class HomeViewModel(
             ui = ui.copy(error = e.message ?: "Failed to add water")
         }
     }
-
     companion object {
         fun factory(): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

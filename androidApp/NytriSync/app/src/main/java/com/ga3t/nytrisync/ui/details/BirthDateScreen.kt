@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.details
-
+﻿package com.ga3t.nytrisync.ui.details
 import android.widget.NumberPicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -8,36 +7,41 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import java.time.YearMonth
-
 @Composable
 fun BirthDateScreen(
     year: Int, month: Int, day: Int,
     onChange: (y: Int, m: Int, d: Int) -> Unit,
     onNext: () -> Unit
 ) {
+    val softGreenGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF81C784),
+            Color(0xFF66BB6A)
+        )
+    )
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         HeaderBlock(
             title = {
-                Text("Your birth date", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimary)
+                Text("Your birth date", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.SemiBold, color = Color.White)
             },
             subtitle = {
-                Text("Scroll wheels to set day, month, and year.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f))
+                Text("Scroll wheels to set day, month, and year.", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.9f))
             },
-            minHeightDp = 360
+            minHeightDp = 360,
+            backgroundGradient = softGreenGradient
         )
         SheetBlock {
             var y by remember { mutableStateOf(year) }
             var m by remember { mutableStateOf(month) }
             var d by remember { mutableStateOf(day) }
-
             val daysInMonth = YearMonth.of(y, m).lengthOfMonth()
             if (d > daysInMonth) d = daysInMonth
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -56,17 +60,16 @@ fun BirthDateScreen(
                     onChange(y, m, d)
                 }
             }
-
             Box(Modifier.fillMaxWidth()) {
                 FloatingActionButton(
                     onClick = onNext,
-                    modifier = Modifier.align(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    containerColor = Color(0xFF66BB6A)
                 ) { Icon(Icons.Rounded.ArrowForward, contentDescription = "Next") }
             }
         }
     }
 }
-
 @Composable
 private fun NumberWheel(min: Int, max: Int, value: Int, onChange: (Int) -> Unit) {
     AndroidView(

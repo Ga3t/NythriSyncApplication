@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
@@ -13,7 +12,6 @@ export class RegistrationComponent implements OnInit {
   registrationForm!: FormGroup;
   loading = false;
   hidePassword = true;
-
   mainText = 'Eat consciously. Live easily.';
   subText = 'Your personal food diary that turns self-care into a simple habit.';
   displayedMainText = '';
@@ -21,7 +19,6 @@ export class RegistrationComponent implements OnInit {
   mainTextComplete = false;
   subTypingComplete = false;
   typingComplete = false;
-
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -35,7 +32,6 @@ export class RegistrationComponent implements OnInit {
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
   }
-
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);
@@ -43,9 +39,7 @@ export class RegistrationComponent implements OnInit {
       this.startTypewriter();
     }
   }
-
   startTypewriter(): void {
-
     let i = 0;
     const typeMain = () => {
       if (i < this.mainText.length) {
@@ -58,13 +52,11 @@ export class RegistrationComponent implements OnInit {
         setTimeout(() => {
           this.typingComplete = false;
         }, 100);
-
         setTimeout(() => this.typeSubText(), 500);
       }
     };
     setTimeout(typeMain, 500);
   }
-
   typeSubText(): void {
     let i = 0;
     const typeSub = () => {
@@ -81,7 +73,6 @@ export class RegistrationComponent implements OnInit {
     };
     typeSub();
   }
-
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
@@ -91,7 +82,6 @@ export class RegistrationComponent implements OnInit {
     }
     return null;
   }
-
   onSubmit(): void {
     if (this.registrationForm.valid) {
       this.loading = true;
@@ -113,14 +103,9 @@ export class RegistrationComponent implements OnInit {
       });
     }
   }
-
   navigateToLogin(): void {
     this.router.navigate(['/login']);
   }
-
   navigateToRegister(): void {
-
   }
 }
-
-

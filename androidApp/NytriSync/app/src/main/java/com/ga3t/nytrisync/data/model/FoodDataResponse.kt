@@ -1,7 +1,5 @@
-package com.ga3t.nytrisync.data.model
-
+﻿package com.ga3t.nytrisync.data.model
 import java.math.BigDecimal
-
 data class FoodDataResponse(
     val code: String,
     val name: String,

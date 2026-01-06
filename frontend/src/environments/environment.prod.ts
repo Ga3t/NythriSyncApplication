@@ -1,4 +1,4 @@
-export const environment = {
+﻿export const environment = {
   production: true,
-  apiUrl: 'https://nythrisync.livelydesert-69cc9f5c.polandcentral.azurecontainerapps.io'
+  apiUrl: 'https://api.yellowpebble-0fd0af74.polandcentral.azurecontainerapps.io'
 };

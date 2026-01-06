@@ -40,6 +40,112 @@
             </mat-form-field>
           </div>
         </mat-tab>
+        <mat-tab label="Custom Food">
+          <div class="custom-food-form">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Food Name</mat-label>
+              <input 
+                matInput 
+                [(ngModel)]="customFoodName"
+                placeholder="Enter food name">
+            </mat-form-field>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Quantity (grams)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodQuantity"
+                  min="0.01"
+                  step="0.1"
+                  placeholder="100">
+                <span matSuffix>g</span>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Calories</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodCalories"
+                  min="0"
+                  step="0.1"
+                  placeholder="0">
+                <span matSuffix>kcal</span>
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Protein (g)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodProtein"
+                  min="0"
+                  step="0.1"
+                  placeholder="0">
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Fat (g)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodFat"
+                  min="0"
+                  step="0.1"
+                  placeholder="0">
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Carbohydrates (g)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodCarbohydrates"
+                  min="0"
+                  step="0.1"
+                  placeholder="0">
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Fiber (g)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodFiber"
+                  min="0"
+                  step="0.1"
+                  placeholder="0">
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Sugar (g)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodSugar"
+                  min="0"
+                  step="0.1"
+                  placeholder="0">
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Cholesterol (mg)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [(ngModel)]="customFoodCholesterol"
+                  min="0"
+                  step="0.1"
+                  placeholder="0">
+                <span matSuffix>mg</span>
+              </mat-form-field>
+            </div>
+            <button mat-raised-button color="primary" (click)="saveCustomFood()" [disabled]="!isCustomFoodValid()" class="save-custom-food-btn">
+              <mat-icon>add</mat-icon>
+              Add Custom Food
+            </button>
+          </div>
+        </mat-tab>
       </mat-tab-group>
       <div *ngIf="searchingFood" class="loading-container">
         <mat-spinner diameter="40"></mat-spinner>
@@ -107,16 +213,16 @@
         <mat-card class="macro-card">
           <div class="macro-header">
             <h4>Fats</h4>
-            <mat-icon class="macro-icon">opacity</mat-icon>
+            <mat-icon class="macro-icon fat-icon">opacity</mat-icon>
           </div>
           <div class="semicircle-chart-container">
             <svg class="semicircle-chart" viewBox="0 0 200 120">
               <path class="semicircle-ring" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"></path>
               <path 
-                class="semicircle-segment" 
+                class="semicircle-segment fat-segment" 
                 d="M 20 100 A 80 80 0 0 1 180 100" 
                 fill="none" 
-                stroke="#66bb6a" 
+                stroke="#FF9800" 
                 stroke-width="20"
                 stroke-linecap="round"
                 [attr.stroke-dasharray]="251.33"
@@ -130,16 +236,16 @@
         <mat-card class="macro-card">
           <div class="macro-header">
             <h4>Protein</h4>
-            <mat-icon class="macro-icon">fitness_center</mat-icon>
+            <mat-icon class="macro-icon protein-icon">fitness_center</mat-icon>
           </div>
           <div class="semicircle-chart-container">
             <svg class="semicircle-chart" viewBox="0 0 200 120">
               <path class="semicircle-ring" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"></path>
               <path 
-                class="semicircle-segment" 
+                class="semicircle-segment protein-segment" 
                 d="M 20 100 A 80 80 0 0 1 180 100" 
                 fill="none" 
-                stroke="#66bb6a" 
+                stroke="#E91E63" 
                 stroke-width="20"
                 stroke-linecap="round"
                 [attr.stroke-dasharray]="251.33"
@@ -153,13 +259,13 @@
         <mat-card class="macro-card">
           <div class="macro-header">
             <h4>Carbohydrates</h4>
-            <mat-icon class="macro-icon">grain</mat-icon>
+            <mat-icon class="macro-icon carbs-icon">grain</mat-icon>
           </div>
           <div class="semicircle-chart-container">
             <svg class="semicircle-chart" viewBox="0 0 200 120">
               <path class="semicircle-ring" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"></path>
               <path 
-                class="semicircle-segment" 
+                class="semicircle-segment carbs-segment" 
                 d="M 20 100 A 80 80 0 0 1 180 100" 
                 fill="none" 
                 stroke="#66bb6a" 

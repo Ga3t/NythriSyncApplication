@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.details
-
+﻿package com.ga3t.nytrisync.ui.details
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -16,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-
 @Composable
 fun ChoiceButton(
     text: String,
@@ -36,13 +34,11 @@ fun ChoiceButton(
         ) { Text(text) }
     }
 }
-
 @Composable
 fun NextFab(
     enabled: Boolean,
     onClick: () -> Unit
 ) {
-
     FilledTonalIconButton(
         onClick = onClick,
         enabled = enabled,

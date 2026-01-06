@@ -12,25 +12,25 @@ spring:
       routes:
         # ---------------- Auth Service ----------------
         - id: auth_route
-          uri: ${AUTH_SERVICE_URI:http://userservice}
+          uri: ${AUTH_SERVICE_URI:http://user-service}
           predicates:
             - Path=/auth/**
 
         # ---------------- User Details Service ----------------
         - id: userdetails_route
-          uri: ${LEDGER_SERVICE_URI:http://caloryservice}
+          uri: ${LEDGER_SERVICE_URI:http://calorieservice}
           predicates:
             - Path=/userdetails/**
 
         # ---------------- Calorie Service ----------------
         - id: calapp_route
-          uri: ${LEDGER_SERVICE_URI:http://caloryservice}
+          uri: ${LEDGER_SERVICE_URI:http://calorieservice}
           predicates:
             - Path=/calapp/**
 
         # ---------------- Analyse Service ----------------
         - id: analyse_route
-          uri: ${LEDGER_SERVICE_URI:http://caloryservice}
+          uri: ${LEDGER_SERVICE_URI:http://calorieservice}
           predicates:
             - Path=/analyse/**
 
@@ -42,6 +42,6 @@ spring:
 
         # ---------------- FatSecret / FoodSecret Service ----------------
         - id: foodsecret_route
-          uri: ${FOODSECRET_SERVICE_URI:http://nythrisyncsecretservice}
+          uri: ${FOODSECRET_SERVICE_URI:http://foodsecretservice}
           predicates:
             - Path=/foodsecret/**

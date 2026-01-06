@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.details
-
+﻿package com.ga3t.nytrisync.ui.details
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -15,8 +14,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.RoundedCornerShape
-
-
 @Composable
 fun HeightScreen(
     valueCm: Float,
@@ -25,14 +22,12 @@ fun HeightScreen(
 ) {
     var showManualInput by remember { mutableStateOf(false) }
     var manualInputText by remember(valueCm) { mutableStateOf(valueCm.toInt().toString()) }
-    
     val softGreenGradient = Brush.verticalGradient(
         colors = listOf(
             Color(0xFF81C784),
             Color(0xFF66BB6A)
         )
     )
-    
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         HeaderBlock(
             title = {
@@ -56,9 +51,9 @@ fun HeightScreen(
         SheetBlock {
             ElevatedCard(
                 shape = RoundedCornerShape(32.dp),
-                modifier = Modifier.clickable { 
+                modifier = Modifier.clickable {
                     manualInputText = valueCm.toInt().toString()
-                    showManualInput = true 
+                    showManualInput = true
                 }
             ) {
                 Column(
@@ -72,7 +67,6 @@ fun HeightScreen(
                     )
                 }
             }
-            
             RulerSlider(
                 value = valueCm,
                 onValueChange = onValueChange,
@@ -82,16 +76,15 @@ fun HeightScreen(
                 mediumEvery = 5f,
                 unitLabel = "cm"
             )
-
             Box(Modifier.fillMaxWidth()) {
                 FloatingActionButton(
                     onClick = onNext,
-                    modifier = Modifier.align(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    containerColor = Color(0xFF66BB6A)
                 ) { Icon(Icons.Rounded.ArrowForward, contentDescription = "Next") }
             }
         }
     }
-    
     if (showManualInput) {
         AlertDialog(
             onDismissRequest = { showManualInput = false },

@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { ApiService } from '../services/api.service';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -14,10 +13,8 @@ export class AuthGuard implements CanActivate {
     private apiService: ApiService,
     private router: Router
   ) {}
-
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
     console.log('AuthGuard checking authentication for:', state.url);
-    
     return this.authService.attemptTokenRefreshIfNeeded().pipe(
       switchMap((isAuthenticated) => {
         if (!isAuthenticated) {
@@ -25,9 +22,7 @@ export class AuthGuard implements CanActivate {
           this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
           return of(false);
         }
-
         console.log('AuthGuard: User is authenticated');
-        
         if (state.url.startsWith('/dashboard')) {
           console.log('AuthGuard: Checking user details before accessing dashboard');
           return this.apiService.userDetailsExists().pipe(
@@ -46,7 +41,6 @@ export class AuthGuard implements CanActivate {
             })
           );
         }
-
         return of(true);
       }),
       catchError((error) => {
@@ -57,5 +51,3 @@ export class AuthGuard implements CanActivate {
     );
   }
 }
-
-

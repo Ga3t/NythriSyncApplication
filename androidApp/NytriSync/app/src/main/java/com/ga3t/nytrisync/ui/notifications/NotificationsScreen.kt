@@ -1,7 +1,5 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
+﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 package com.ga3t.nytrisync.ui.notifications
-
 import android.app.AlarmManager
 import android.app.TimePickerDialog
 import android.content.Intent
@@ -59,54 +57,41 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import java.time.LocalTime
 import java.util.Locale
-
 @Composable
 fun NotificationsScreen(onBack: () -> Unit) {
     val ctx = LocalContext.current
-
     var brEnabled by remember { mutableStateOf(false) }
     val brTimes = remember { mutableStateListOf<String>() }
-
     var lnEnabled by remember { mutableStateOf(false) }
     val lnTimes = remember { mutableStateListOf<String>() }
-
     var dnEnabled by remember { mutableStateOf(false) }
     val dnTimes = remember { mutableStateListOf<String>() }
-
     var snEnabled by remember { mutableStateOf(false) }
     var snMode by remember { mutableStateOf("ON_TIME") }
     val snTimes = remember { mutableStateListOf<String>() }
     val snIntervals = remember { mutableStateListOf<Int>() }
-
     var waterEnabled by remember { mutableStateOf(false) }
     var waterMode by remember { mutableStateOf("ON_TIME") }
     val waterTimes = remember { mutableStateListOf<String>() }
     val waterIntervals = remember { mutableStateListOf<Int>() }
-
-
     LaunchedEffect(Unit) {
         NotificationsPrefs.load()?.let { cfg ->
             brEnabled = cfg.breakfastEnabled
             brTimes.clear(); brTimes.addAll(cfg.breakfastTimes.take(1))
-
             lnEnabled = cfg.lunchEnabled
             lnTimes.clear(); lnTimes.addAll(cfg.lunchTimes.take(1))
-
             dnEnabled = cfg.dinnerEnabled
             dnTimes.clear(); dnTimes.addAll(cfg.dinnerTimes.take(1))
-
             snEnabled = cfg.snackEnabled
             snMode = cfg.snackMode
             snTimes.clear(); snTimes.addAll(cfg.snackTimes)
             snIntervals.clear(); snIntervals.addAll(cfg.snackIntervals)
-
             waterEnabled = cfg.waterEnabled
             waterMode = cfg.waterMode
             waterTimes.clear(); waterTimes.addAll(cfg.waterTimes)
             waterIntervals.clear(); waterIntervals.addAll(cfg.waterIntervals)
         }
     }
-
     fun currentConfig(): NotificationsConfig = NotificationsConfig(
         breakfastEnabled = brEnabled,
         breakfastTimes = brTimes.take(1),
@@ -123,7 +108,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
         waterTimes = waterTimes.toList(),
         waterIntervals = waterIntervals.toList()
     )
-
     fun requestExactIfNeeded(): Boolean {
         if (Build.VERSION.SDK_INT >= 31) {
             val am = ctx.getSystemService(AlarmManager::class.java)
@@ -134,7 +118,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
         }
         return true
     }
-
     fun persistNow() {
         val prev = NotificationsPrefs.load()
         val cfg = currentConfig()
@@ -142,14 +125,12 @@ fun NotificationsScreen(onBack: () -> Unit) {
         NotificationsPrefs.save(cfg)
         ReminderScheduler.scheduleAll(ctx, cfg)
     }
-
     fun ensureSingleTime(list: MutableList<String>) {
         if (list.isEmpty()) list += "12:00" else if (list.size > 1) {
             val first = list.first()
             list.clear(); list += first
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -167,8 +148,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text("Meals", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-
-
             MealToggleRow(
                 title = "BREAKFAST",
                 enabled = brEnabled,
@@ -182,8 +161,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
                     pickTime(ctx) { t -> brTimes.clear(); brTimes += t; persistNow() }
                 }
             )
-
-
             MealToggleRow(
                 title = "LUNCH",
                 enabled = lnEnabled,
@@ -197,8 +174,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
                     pickTime(ctx) { t -> lnTimes.clear(); lnTimes += t; persistNow() }
                 }
             )
-
-
             MealToggleRow(
                 title = "DINNER",
                 enabled = dnEnabled,
@@ -212,8 +187,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
                     pickTime(ctx) { t -> dnTimes.clear(); dnTimes += t; persistNow() }
                 }
             )
-
-
             ElevatedCard {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Row(
@@ -236,7 +209,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
                             }
                         )
                     }
-
                     if (snEnabled) {
                         ModeChips(
                             selected = snMode,
@@ -247,9 +219,7 @@ fun NotificationsScreen(onBack: () -> Unit) {
                                 persistNow()
                             }
                         )
-
                         if (snMode == "ON_TIME") {
-
                             TimesEditor(
                                 times = snTimes,
                                 onAdd = { pickTime(ctx) { t -> snTimes += t; persistNow() } },
@@ -264,8 +234,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
                     }
                 }
             }
-
-
             ElevatedCard {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Row(
@@ -288,7 +256,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
                             }
                         )
                     }
-
                     if (waterEnabled) {
                         ModeChips(
                             selected = waterMode,
@@ -299,7 +266,6 @@ fun NotificationsScreen(onBack: () -> Unit) {
                                 persistNow()
                             }
                         )
-
                         if (waterMode == "ON_TIME") {
                             TimesEditor(
                                 times = waterTimes,
@@ -315,12 +281,10 @@ fun NotificationsScreen(onBack: () -> Unit) {
                     }
                 }
             }
-
             Spacer(Modifier.height(8.dp))
         }
     }
 }
-
 @Composable
 private fun SingleTimeEditor(
     time: String,
@@ -333,7 +297,6 @@ private fun SingleTimeEditor(
         Text(time)
     }
 }
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun IntervalSingleSelector(
@@ -341,8 +304,6 @@ private fun IntervalSingleSelector(
     onSelect: (Int) -> Unit
 ) {
     val presets = listOf(15, 30, 45, 60, 90)
-
-
     CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
@@ -359,8 +320,6 @@ private fun IntervalSingleSelector(
         }
     }
 }
-
-
 @Composable
 private fun GreenSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Switch(
@@ -375,7 +334,6 @@ private fun GreenSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
         )
     )
 }
-
 @Composable
 private fun MealToggleRow(
     title: String,
@@ -402,7 +360,6 @@ private fun MealToggleRow(
         }
     }
 }
-
 @Composable
 private fun ModeChips(selected: String, onSelect: (String) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -418,7 +375,6 @@ private fun ModeChips(selected: String, onSelect: (String) -> Unit) {
         )
     }
 }
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TimesEditor(
@@ -454,7 +410,6 @@ private fun TimesEditor(
     }
     OutlinedButton(onClick = onAdd, shape = MaterialTheme.shapes.large) { Text("+ Add time") }
 }
-
 @Composable
 private fun IntervalEditor(
     intervals: MutableList<Int>,
@@ -503,7 +458,6 @@ private fun IntervalEditor(
         ) { Text("Add") }
     }
 }
-
 private fun pickTime(ctx: android.content.Context, onPicked: (String) -> Unit) {
     val now = LocalTime.now()
     TimePickerDialog(

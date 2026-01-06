@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './core/services/auth.service';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,7 +9,6 @@ import { AuthService } from './core/services/auth.service';
 })
 export class AppComponent implements OnInit {
   title = 'NutriSync';
-
   constructor(
     private router: Router,
     private authService: AuthService
@@ -21,12 +19,10 @@ export class AppComponent implements OnInit {
       console.log('Navigation ended to:', event.url);
     });
   }
-
   ngOnInit(): void {
     console.log('AppComponent initialized');
     console.log('Current URL:', window.location.href);
     console.log('Router config:', this.router.config);
-    
     this.authService.attemptTokenRefreshIfNeeded().subscribe({
       next: (isAuthenticated) => {
         if (isAuthenticated) {
@@ -41,5 +37,3 @@ export class AppComponent implements OnInit {
     });
   }
 }
-
-

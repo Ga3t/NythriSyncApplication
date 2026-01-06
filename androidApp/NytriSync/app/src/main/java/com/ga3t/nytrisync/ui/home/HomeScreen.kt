@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.home
-
+﻿package com.ga3t.nytrisync.ui.home
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.animation.core.animateFloatAsState
@@ -83,7 +82,9 @@ import kotlin.math.min
 import com.ga3t.nytrisync.R
 import kotlinx.coroutines.launch
 import java.math.RoundingMode
-
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 @Composable
 fun HomeScreen(
     onRequireOnboarding: () -> Unit,
@@ -95,22 +96,18 @@ fun HomeScreen(
 ) {
     val vm: HomeViewModel = viewModel(factory = HomeViewModel.factory())
     val state = vm.ui
-
-
     LaunchedEffect(state.requireOnboarding) {
         if (state.requireOnboarding) {
             onRequireOnboarding()
             vm.clearOnboardingFlag()
         }
     }
-
     if (state.loading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
         return
     }
-
     if (state.error != null && state.data == null && !state.requireOnboarding) {
         Column(
             Modifier
@@ -125,14 +122,11 @@ fun HomeScreen(
         }
         return
     }
-
     val data = state.data!!
-
     var showAddWater by remember { mutableStateOf(false) }
     var waterSelected by remember { mutableStateOf(250) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -141,7 +135,6 @@ fun HomeScreen(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -150,7 +143,8 @@ fun HomeScreen(
             Text(
                 text = state.greeting,
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 HeaderIcon(
@@ -161,9 +155,7 @@ fun HomeScreen(
                 HeaderIcon(icon = Icons.Outlined.Person, desc = "Profile", onClick = onProfileClick)
             }
         }
-
         WeekOvals(data.weekCalory)
-
         Spacer(Modifier.height(24.dp))
         Row(
             Modifier.fillMaxWidth(),
@@ -173,14 +165,14 @@ fun HomeScreen(
             Text(
                 "Daily Overview",
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 HeaderIcon(icon = Icons.Outlined.BarChart, desc = "Stats", onClick = onChartClick)
                 HeaderIcon(icon = Icons.Outlined.CalendarToday, desc = "Calendar", onClick = onCalendarClick)
             }
         }
-
         TodayCaloriesBlock(data.todayCalory)
         WaterBlock(
             water = data.todayWater,
@@ -208,8 +200,6 @@ fun HomeScreen(
                 )
             }
         }
-
-
         MacrosRow(
             carbs = data.todayCarbs,
             protein = data.todayProtein,
@@ -222,16 +212,10 @@ fun HomeScreen(
         Spacer(Modifier.windowInsetsPadding(WindowInsets.navigationBars))
     }
 }
-
-
-
-
 @Composable
 private fun WeekOvals(week: MainPageResponse.WeekCalory) {
     val dayKeys = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
     val labels  = listOf("M","T","W","T","F","S","S")
-
-
     val cal = Calendar.getInstance()
     val dow = cal.get(Calendar.DAY_OF_WEEK)
     val todayIndex = ((dow + 5) % 7)
@@ -240,7 +224,6 @@ private fun WeekOvals(week: MainPageResponse.WeekCalory) {
         (startCal.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, i) }
             .get(Calendar.DAY_OF_MONTH)
     }
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -250,9 +233,7 @@ private fun WeekOvals(week: MainPageResponse.WeekCalory) {
             val norm = week.thisWeekCaloryNorm.getIgnoreCase(key)?.toFloat() ?: 0f
             val hasData = norm > 0f
             val ratio = if (hasData) (cons / norm).coerceIn(0f, 1f) else 0f
-
             val isToday = i == todayIndex
-
             val ovalBg = when {
                 isToday -> Color(0xFF4CAF50)
                 hasData -> MaterialTheme.colorScheme.surfaceVariant
@@ -263,7 +244,6 @@ private fun WeekOvals(week: MainPageResponse.WeekCalory) {
             val trackColor = if (isToday) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.35f)
             else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
             val centerTextColor = if (isToday) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -289,7 +269,6 @@ private fun WeekOvals(week: MainPageResponse.WeekCalory) {
                             maxLines = 1,
                             overflow = TextOverflow.Clip
                         )
-
                         Box(modifier = Modifier.size(28.dp), contentAlignment = Alignment.Center) {
                             RingProgress(
                                 progress = ratio,
@@ -312,9 +291,6 @@ private fun WeekOvals(week: MainPageResponse.WeekCalory) {
         }
     }
 }
-
-
-
 private fun <T> Map<String, T?>.getIgnoreCase(key: String): T? {
     this[key]?.let { return it }
     this.entries.firstOrNull { it.key.equals(key, ignoreCase = true) }?.value?.let { return it }
@@ -332,10 +308,7 @@ private fun <T> Map<String, T?>.getIgnoreCase(key: String): T? {
         expanded.any { e.key.equals(it, ignoreCase = true) }
     }?.value
 }
-
-
 private val WATER_VALUES = (50..5000 step 50).toList()
-
 @Composable
 private fun AddWaterSheet(
     initial: Int,
@@ -345,7 +318,6 @@ private fun AddWaterSheet(
     var selected by remember(initial) { mutableStateOf(
         WATER_VALUES.minByOrNull { kotlin.math.abs(it - initial) } ?: 250
     ) }
-
     Column(
         Modifier
             .fillMaxWidth()
@@ -353,9 +325,8 @@ private fun AddWaterSheet(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text("Add water", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-        Text("${selected} ml", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Medium)
-
+        Text("Add water", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+        Text("${selected} ml", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
         WaterWheelPicker(
             selected = selected,
             onSelectedChange = { selected = it },
@@ -363,14 +334,12 @@ private fun AddWaterSheet(
                 .fillMaxWidth()
                 .height(180.dp)
         )
-
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(
                 onClick = onDismiss,
                 modifier = Modifier.weight(1f),
                 shape = MaterialTheme.shapes.large
             ) { Text("Cancel") }
-
             Button(
                 onClick = { onConfirm(selected) },
                 modifier = Modifier.weight(1f),
@@ -380,7 +349,6 @@ private fun AddWaterSheet(
         Spacer(Modifier.height(8.dp))
     }
 }
-
 @Composable
 private fun WaterWheelPicker(
     selected: Int,
@@ -390,7 +358,15 @@ private fun WaterWheelPicker(
     val values = remember { WATER_VALUES }
     val labels = remember { values.map { it.toString() }.toTypedArray() }
     val initIndex = remember(selected) { values.indexOf(selected).coerceAtLeast(0) }
-
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val androidColor = remember(textColor) {
+        android.graphics.Color.argb(
+            (textColor.alpha * 255).toInt(),
+            (textColor.red * 255).toInt(),
+            (textColor.green * 255).toInt(),
+            (textColor.blue * 255).toInt()
+        )
+    }
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -401,21 +377,58 @@ private fun WaterWheelPicker(
                 maxValue = values.size - 1
                 displayedValues = labels
                 value = initIndex
+                tag = androidColor
                 setOnValueChangedListener { _, _, newIndex ->
                     onSelectedChange(values[newIndex])
+                    post {
+                        val color = tag as? Int ?: androidColor
+                        setTextColorRecursiveWithAndroidColor(this, color)
+                    }
+                }
+                addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                    val color = view.tag as? Int ?: androidColor
+                    view.post {
+                        setTextColorRecursiveWithAndroidColor(view, color)
+                    }
+                }
+                post {
+                    setTextColorRecursiveWithAndroidColor(this, androidColor)
                 }
             }
         },
         update = { picker ->
             val idx = values.indexOf(selected).coerceAtLeast(0)
             if (picker.value != idx) picker.value = idx
+            picker.tag = androidColor
+            picker.post {
+                setTextColorRecursiveWithAndroidColor(picker, androidColor)
+            }
         }
     )
 }
-
-
-
-
+private fun setTextColorRecursive(view: android.view.View, color: androidx.compose.ui.graphics.Color) {
+    if (view is android.widget.TextView) {
+        view.setTextColor(android.graphics.Color.argb(
+            (color.alpha * 255).toInt(),
+            (color.red * 255).toInt(),
+            (color.green * 255).toInt(),
+            (color.blue * 255).toInt()
+        ))
+    } else if (view is android.view.ViewGroup) {
+        for (i in 0 until view.childCount) {
+            setTextColorRecursive(view.getChildAt(i), color)
+        }
+    }
+}
+private fun setTextColorRecursiveWithAndroidColor(view: android.view.View, color: Int) {
+    if (view is android.widget.TextView) {
+        view.setTextColor(color)
+    } else if (view is android.view.ViewGroup) {
+        for (i in 0 until view.childCount) {
+            setTextColorRecursiveWithAndroidColor(view.getChildAt(i), color)
+        }
+    }
+}
     @Composable
     fun NotificationsScreen(onBack: () -> Unit) {
         Scaffold(

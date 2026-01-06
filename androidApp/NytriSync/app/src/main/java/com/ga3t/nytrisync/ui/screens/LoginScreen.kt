@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.screens
-
+﻿package com.ga3t.nytrisync.ui.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -37,7 +36,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.imePadding
-
 @Composable
 fun LoginScreen(
     onNavigateToRegistration: () -> Unit,
@@ -46,14 +44,11 @@ fun LoginScreen(
     val vm: LoginViewModel = viewModel(factory = LoginViewModel.factory())
     val state = vm.uiState
     var passwordVisible by remember { mutableStateOf(false) }
-
     val headerGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF81C784), Color(0xFF66BB6A))
     )
-
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val headerMinHeightDp = maxOf(320, (screenHeight * 0.42f).toInt())
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -63,7 +58,6 @@ fun LoginScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Green gradient header
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -101,8 +95,6 @@ fun LoginScreen(
                 )
             }
         }
-
-
             Surface(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
@@ -138,7 +130,6 @@ fun LoginScreen(
                         shape = MaterialTheme.shapes.large,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     OutlinedTextField(
                         value = state.password,
                         onValueChange = vm::onPasswordChange,
@@ -157,7 +148,6 @@ fun LoginScreen(
                         shape = MaterialTheme.shapes.large,
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     AnimatedVisibility(visible = state.error != null) {
                         Text(
                             text = state.error.orEmpty(),
@@ -166,7 +156,6 @@ fun LoginScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-
                     ElevatedButton(
                         onClick = { vm.submit(onLoggedIn) },
                         enabled = !state.isLoading,
@@ -194,7 +183,6 @@ fun LoginScreen(
                             )
                         }
                     }
-
                     val link = buildAnnotatedString {
                         append("Don't have an account? ")
                         pushStringAnnotation(tag = "signup", annotation = "signup")

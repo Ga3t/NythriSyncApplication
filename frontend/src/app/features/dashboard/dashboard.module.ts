@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+﻿import { NgModule } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardRoutingModule } from './dashboard-routing.module';
@@ -7,12 +7,12 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { CalendarViewComponent } from './components/calendar-view/calendar-view.component';
 import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { WarningDialogComponent } from './components/profile/warning-dialog.component';
 import { AddMealComponent } from './components/add-meal/add-meal.component';
 import { FoodSearchComponent } from './components/food-search/food-search.component';
 import { AddWaterDialogComponent } from './components/add-water-dialog/add-water-dialog.component';
 import { WeightDialogComponent } from './components/weight-dialog/weight-dialog.component';
 import { DatePageComponent } from './components/date-page/date-page.component';
-
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -35,7 +35,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from '../../shared/shared.module';
-
 @NgModule({
   declarations: [
     DashboardLayoutComponent,
@@ -43,6 +42,7 @@ import { SharedModule } from '../../shared/shared.module';
     CalendarViewComponent,
     AnalyticsComponent,
     ProfileComponent,
+    WarningDialogComponent,
     AddMealComponent,
     FoodSearchComponent,
     AddWaterDialogComponent,
@@ -79,4 +79,3 @@ import { SharedModule } from '../../shared/shared.module';
   ]
 })
 export class DashboardModule { }
-

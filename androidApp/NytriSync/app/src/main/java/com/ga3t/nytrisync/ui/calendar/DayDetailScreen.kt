@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.calendar
-
+﻿package com.ga3t.nytrisync.ui.calendar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -24,12 +23,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-
 class DayDetailViewModel(private val repository: CalorieRepository) : ViewModel() {
-
     var uiState by mutableStateOf(DetailUiState())
         private set
-
     fun load(date: String) {
         viewModelScope.launch {
             uiState = uiState.copy(loading = true)
@@ -41,13 +37,11 @@ class DayDetailViewModel(private val repository: CalorieRepository) : ViewModel(
             }
         }
     }
-
     data class DetailUiState(
         val loading: Boolean = false,
         val error: String? = null,
         val data: MainPageResponse? = null
     )
-
     companion object {
         fun factory(): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -57,7 +51,6 @@ class DayDetailViewModel(private val repository: CalorieRepository) : ViewModel(
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DayDetailScreen(
@@ -66,18 +59,14 @@ fun DayDetailScreen(
     onAddMealClick: (MealType) -> Unit
 ) {
     val vm: DayDetailViewModel = viewModel(factory = DayDetailViewModel.factory())
-
     LaunchedEffect(date) {
         vm.load(date)
     }
-
     val state = vm.uiState
-
     val title = try {
         val parsed = LocalDate.parse(date)
         parsed.format(DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH))
     } catch (e: Exception) { date }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -101,7 +90,6 @@ fun DayDetailScreen(
                 Text("Error: ${state.error}", color = MaterialTheme.colorScheme.error, modifier = Modifier.align(Alignment.Center))
             } else if (state.data != null) {
                 val d = state.data!!
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -110,20 +98,16 @@ fun DayDetailScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     TodayCaloriesBlock(d.todayCalory)
-
                     WaterBlock(d.todayWater, onAddWaterClick = { })
-
                     MacrosRow(
                         carbs = d.todayCarbs,
                         protein = d.todayProtein,
                         fat = d.todayFat
                     )
-
                     MealsList(
                         meals = d.mealPage,
                         onAddMealClick = onAddMealClick
                     )
-
                     Spacer(Modifier.height(32.dp))
                 }
             }

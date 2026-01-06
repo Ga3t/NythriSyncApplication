@@ -1,17 +1,13 @@
-package com.ga3t.nytrisync.ui.notifications
-
+﻿package com.ga3t.nytrisync.ui.notifications
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import java.util.Calendar
-
 object ReminderScheduler {
-
     private fun flags(): Int =
         PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
-
     private fun pi(context: Context, id: Int, title: String, text: String): PendingIntent {
         val intent = Intent(context, ReminderReceiver::class.java).apply {
             putExtra("id", id)
@@ -20,7 +16,6 @@ object ReminderScheduler {
         }
         return PendingIntent.getBroadcast(context, id, intent, flags())
     }
-
     fun scheduleExact(context: Context, triggerAtMillis: Long, id: Int, title: String, text: String) {
         val am = context.getSystemService(AlarmManager::class.java)
         val pending = pi(context, id, title, text)
@@ -34,12 +29,10 @@ object ReminderScheduler {
             am.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pending)
         }
     }
-
     fun cancel(context: Context, id: Int, title: String, text: String) {
         context.getSystemService(AlarmManager::class.java)
             .cancel(pi(context, id, title, text))
     }
-
     fun nextTimeMillis(h: Int, m: Int): Long {
         val cal = Calendar.getInstance().apply {
             set(Calendar.SECOND, 0)
@@ -50,10 +43,8 @@ object ReminderScheduler {
         if (cal.timeInMillis <= System.currentTimeMillis()) cal.add(Calendar.DAY_OF_YEAR, 1)
         return cal.timeInMillis
     }
-
     private fun id(base: Int, index: Int) = base + index
     private fun parseHM(s: String): Pair<Int, Int> = s.substring(0, 2).toInt() to s.substring(3, 5).toInt()
-
     fun scheduleAll(context: Context, cfg: NotificationsConfig) {
         if (cfg.breakfastEnabled) cfg.breakfastTimes.forEachIndexed { i, t ->
             val (h, m) = parseHM(t)
@@ -85,13 +76,11 @@ object ReminderScheduler {
             }
         }
     }
-
     fun cancelAll(context: Context, cfg: NotificationsConfig) {
         cfg.breakfastTimes.forEachIndexed { i, _ -> cancel(context, id(1000, i), "Breakfast", "Time to have breakfast") }
         cfg.lunchTimes.forEachIndexed { i, _ -> cancel(context, id(2000, i), "Lunch", "Time to have lunch") }
         cfg.dinnerTimes.forEachIndexed { i, _ -> cancel(context, id(3000, i), "Dinner", "Time to have dinner") }
         cfg.snackTimes.forEachIndexed { i, _ -> cancel(context, id(4000, i), "Snack", "Time for a snack") }
-
         if (cfg.waterMode == "BY_TIMES") {
             cfg.waterTimes.forEachIndexed { i, _ -> cancel(context, id(5000, i), "Water", "Drink water") }
         } else {

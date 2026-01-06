@@ -1,13 +1,10 @@
-package com.ga3t.nytrisync.data.repository
-
+﻿package com.ga3t.nytrisync.data.repository
 import com.ga3t.nytrisync.data.local.TokenStorage
 import com.ga3t.nytrisync.data.model.AuthResponseDto
 import com.ga3t.nytrisync.data.model.LoginDto
 import com.ga3t.nytrisync.data.model.RegistrationDto
 import com.ga3t.nytrisync.data.remote.AuthApi
-
 class AuthRepository(private val api: AuthApi) {
-
     suspend fun register(username: String, email: String, password: String): Result<String> {
         return try {
             val resp = api.registration(RegistrationDto(username = username, password = password, email = email))
@@ -21,7 +18,6 @@ class AuthRepository(private val api: AuthApi) {
             Result.failure(e)
         }
     }
-
     suspend fun login(login: String, password: String): Result<AuthResponseDto> {
         return try {
             val resp = api.login(LoginDto(login = login, password = password))
@@ -37,7 +33,6 @@ class AuthRepository(private val api: AuthApi) {
             Result.failure(e)
         }
     }
-
     fun logout() {
         TokenStorage.clear()
     }

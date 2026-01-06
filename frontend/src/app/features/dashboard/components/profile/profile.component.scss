@@ -119,9 +119,87 @@
   }
 }
 
+// Make mat-select dropdown options white
+::ng-deep {
+  .cdk-overlay-pane .mat-mdc-select-panel,
+  .mat-mdc-select-panel {
+    background-color: white !important;
+    background: white !important;
+    
+    .mat-mdc-option {
+      color: #000000 !important;
+      background-color: white !important;
+      background: white !important;
+      
+      .mdc-list-item__primary-text {
+        color: #000000 !important;
+      }
+      
+      &:hover:not(.mdc-list-item--disabled) {
+        background-color: #f5f5f5 !important;
+        background: #f5f5f5 !important;
+      }
+      
+      &.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+        background-color: #f5f5f5 !important;
+        background: #f5f5f5 !important;
+        color: #000000 !important;
+        
+        .mdc-list-item__primary-text {
+          color: #000000 !important;
+        }
+      }
+      
+      &.mdc-list-item--selected:not(.mat-mdc-option-multiple):not(.mdc-list-item--disabled) {
+        background-color: #f5f5f5 !important;
+        background: #f5f5f5 !important;
+        color: #000000 !important;
+        
+        .mdc-list-item__primary-text {
+          color: #000000 !important;
+        }
+      }
+      
+      &.mat-active,
+      &:focus {
+        background-color: #f5f5f5 !important;
+        background: #f5f5f5 !important;
+        color: #000000 !important;
+      }
+    }
+  }
 
+  .cdk-overlay-container,
+  .cdk-overlay-pane,
+  .cdk-overlay-backdrop {
+    .mat-mdc-select-panel {
+      background-color: white !important;
+      background: white !important;
+    }
+  }
 
+  .cdk-overlay-pane[class*="mat-mdc-select-panel"] {
+    background-color: white !important;
+    background: white !important;
+  }
 
+  .mat-mdc-select-panel,
+  .mat-mdc-select-panel .mdc-list,
+  .mat-mdc-select-panel .mdc-list-item {
+    background-color: white !important;
+    background: white !important;
+  }
+
+  // Center the warning dialog
+  .warning-dialog-container {
+    .mat-mdc-dialog-container {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+    }
+  }
+}
 
 
 

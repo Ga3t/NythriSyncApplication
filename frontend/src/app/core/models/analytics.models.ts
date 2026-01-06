@@ -1,7 +1,6 @@
-export interface ReportResponse {
+﻿export interface ReportResponse {
   anlyses: DayAnalyse[];
 }
-
 export interface DayAnalyse {
   date: string;
   weight: number | null;
@@ -20,7 +19,6 @@ export interface DayAnalyse {
   waterCons: number;
   waterNorm: number;
 }
-
 export interface DailyReport {
   date: string;
   totalCalories: number;
@@ -29,7 +27,6 @@ export interface DailyReport {
   totalCarbohydrates: number;
   meals: MealReport[];
 }
-
 export interface MealReport {
   mealType: string;
   calories: number;
@@ -37,16 +34,3 @@ export interface MealReport {
   fats: number;
   carbohydrates: number;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

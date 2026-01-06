@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.common
-
+﻿package com.ga3t.nytrisync.ui.common
 import android.graphics.PathMeasure
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -25,7 +24,6 @@ import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.min
-
 @Composable
 fun LoadingTrackSpinner(
     modifier: Modifier = Modifier,
@@ -36,19 +34,15 @@ fun LoadingTrackSpinner(
 ) {
     val svgPathData =
         "M0.625 21.5 h10.25 l3.75 -5.875 l7.375 15 l9.75 -30 l7.375 20.875 v0 h10.25"
-
     val viewBoxW = 50f
     val viewBoxH = 31.25f
     val aspect = viewBoxH / viewBoxW
-
     val rawPath = remember {
         PathParser().parsePathString(svgPathData).toPath()
     }
-
     val rawLength = remember {
-        PathMeasure(rawPath.asAndroidPath(), false).length // <-- тут
+        PathMeasure(rawPath.asAndroidPath(), false).length
     }
-
     val infinite = rememberInfiniteTransition(label = "spinner")
     val phaseFrac = infinite.animateFloat(
         initialValue = 1f,
@@ -59,7 +53,6 @@ fun LoadingTrackSpinner(
         ),
         label = "phase"
     )
-
     val alphaCar = infinite.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -74,24 +67,19 @@ fun LoadingTrackSpinner(
         ),
         label = "alpha"
     )
-
     androidx.compose.foundation.Canvas(
         modifier = modifier.size(size, (size * aspect))
     ) {
         val scale = min(size.toPx() / viewBoxW, (size * aspect).toPx() / viewBoxH)
         val strokeWidthPx = 4f * scale
-
         val pathLengthPx = rawLength * scale
-
         val dashEffect = PathEffect.dashPathEffect(
             intervals = floatArrayOf(pathLengthPx, pathLengthPx),
             phase = phaseFrac.value * pathLengthPx
         )
-
         withTransform({
             scale(scale, scale, pivot = Offset.Zero)
         }) {
-
             drawPath(
                 path = rawPath,
                 color = color.copy(alpha = bgOpacity),
@@ -101,7 +89,6 @@ fun LoadingTrackSpinner(
                     join = StrokeJoin.Round
                 )
             )
-
             drawPath(
                 path = rawPath,
                 color = color.copy(alpha = alphaCar.value),

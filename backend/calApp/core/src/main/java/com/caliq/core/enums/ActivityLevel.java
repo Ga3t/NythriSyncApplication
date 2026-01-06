@@ -1,5 +1,4 @@
 package com.caliq.core.enums;
-
 public enum ActivityLevel {
     MINIMUM,
     LIGHT_TRAINING,

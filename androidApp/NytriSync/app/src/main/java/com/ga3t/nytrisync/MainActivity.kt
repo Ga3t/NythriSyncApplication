@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync
-
+﻿package com.ga3t.nytrisync
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -39,16 +38,13 @@ import com.ga3t.nytrisync.ui.theme.AppTheme
 import com.ga3t.nytrisync.utils.SessionEvents
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setContent {
             AppTheme {
                 val navController = rememberNavController()
-
                 LaunchedEffect(Unit) {
                     SessionEvents.logout.collectLatest {
                         navController.navigate("login") {
@@ -57,17 +53,14 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-
                 if (Build.VERSION.SDK_INT >= 33) {
                     val launcher = rememberLauncherForActivityResult(
                         ActivityResultContracts.RequestPermission()
                     ) {}
-
                     LaunchedEffect(Unit) {
                         launcher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
                     }
                 }
-
                 NavHost(
                     navController = navController,
                     startDestination = "app_start"
@@ -86,7 +79,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     composable("login") {
                         LoginScreen(
                             onNavigateToRegistration = { navController.navigate("registration") },
@@ -97,7 +89,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     composable("registration") {
                         RegistrationScreen(
                             onBackToLogin = { navController.navigate("login") },
@@ -108,7 +99,6 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     composable("details_check") {
                         DetailsGateScreen(
                             onExists = {
@@ -123,24 +113,20 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-
                     composable("home") { backStackEntry ->
                         val vm: HomeViewModel = viewModel(
                             viewModelStoreOwner = backStackEntry,
                             factory = HomeViewModel.factory()
                         )
-
                         val refreshTs by backStackEntry.savedStateHandle
                             .getStateFlow("home_refresh", 0L)
                             .collectAsState()
-
                         LaunchedEffect(refreshTs) {
                             if (refreshTs != 0L) {
                                 vm.refresh()
                                 backStackEntry.savedStateHandle.remove<Long>("home_refresh")
                             }
                         }
-
                         HomeScreen(
                             onRequireOnboarding = {
                                 navController.navigate("onboarding") {
@@ -159,24 +145,19 @@ class MainActivity : ComponentActivity() {
                             onCalendarClick = { navController.navigate("calendar") }
                         )
                     }
-
                     composable("profile") {
                         ProfileScreen(onBack = { navController.popBackStack() })
                     }
-
                     composable("notifications") {
                         NotificationsScreen(onBack = { navController.popBackStack() })
                     }
-
                     composable("meal_builder/{mealType}/{date}") { backStackEntry ->
                         val mealTypeStr = backStackEntry.arguments?.getString("mealType") ?: "BREAKFAST"
                         val date = backStackEntry.arguments?.getString("date") ?: LocalDate.now().toString()
                         val type = runCatching { MealType.valueOf(mealTypeStr) }.getOrElse { MealType.BREAKFAST }
-
                         val scanned by backStackEntry.savedStateHandle
                             .getStateFlow("scanned_barcode", "")
                             .collectAsState()
-
                         MealBuilderScreen(
                             mealType = type,
                             onBack = { navController.popBackStack() },
@@ -192,11 +173,9 @@ class MainActivity : ComponentActivity() {
                             date = date
                         )
                     }
-
                     composable("stats") {
                         com.ga3t.nytrisync.ui.stats.StatsScreen(onBack = { navController.popBackStack() })
                     }
-
                     composable("barcode_scan") {
                         BarcodeScannerScreen(
                             onDetected = { code ->
@@ -208,7 +187,6 @@ class MainActivity : ComponentActivity() {
                             onClose = { navController.popBackStack() }
                         )
                     }
-
                     navigation(
                         startDestination = "ud_weight",
                         route = "onboarding"
@@ -219,7 +197,6 @@ class MainActivity : ComponentActivity() {
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             WeightScreen(
                                 title = "Your weight",
                                 subtitle = "Adjust your current weight (kg).",
@@ -228,28 +205,24 @@ class MainActivity : ComponentActivity() {
                                 onNext = { navController.navigate("ud_height") }
                             )
                         }
-
                         composable("ud_height") { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry("onboarding")
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             HeightScreen(
                                 valueCm = vm.ui.height.toFloat(),
                                 onValueChange = { vm.setHeight(it) },
                                 onNext = { navController.navigate("ud_birth") }
                             )
                         }
-
                         composable("ud_birth") { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry("onboarding")
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             BirthDateScreen(
                                 year = vm.ui.birthYear,
                                 month = vm.ui.birthMonth,
@@ -258,42 +231,36 @@ class MainActivity : ComponentActivity() {
                                 onNext = { navController.navigate("ud_sex") }
                             )
                         }
-
                         composable("ud_sex") { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry("onboarding")
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             SexScreen(
                                 selected = vm.ui.sex,
                                 onSelect = { vm.setSex(it) },
                                 onNext = { navController.navigate("ud_goal") }
                             )
                         }
-
                         composable("ud_goal") { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry("onboarding")
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             GoalScreen(
                                 selected = vm.ui.goal,
                                 onSelect = { vm.setGoal(it) },
                                 onNext = { navController.navigate("ud_activity") }
                             )
                         }
-
                         composable("ud_activity") { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry("onboarding")
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             ActivityScreen(
                                 label = vm.activityLabel(),
                                 onPrevLevel = { vm.setActivityIndex(vm.ui.activityIndex - 1) },
@@ -301,14 +268,12 @@ class MainActivity : ComponentActivity() {
                                 onNext = { navController.navigate("ud_wanted") }
                             )
                         }
-
                         composable("ud_wanted") { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry("onboarding")
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             WantedWeightScreen(
                                 currentKg = vm.ui.currentWeight.toFloat(),
                                 wantedKg = vm.ui.wantedWeight.toFloat(),
@@ -321,24 +286,20 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
                         composable("calendar") { backStackEntry ->
                             val vm: com.ga3t.nytrisync.ui.calendar.CalendarViewModel = viewModel(
                                 viewModelStoreOwner = backStackEntry,
                                 factory = com.ga3t.nytrisync.ui.calendar.CalendarViewModel.factory()
                             )
-
                             val refreshTs by backStackEntry.savedStateHandle
                                 .getStateFlow("calendar_refresh", 0L)
                                 .collectAsState()
-
                             LaunchedEffect(refreshTs) {
                                 if (refreshTs != 0L) {
                                     vm.loadData()
                                     backStackEntry.savedStateHandle.remove<Long>("calendar_refresh")
                                 }
                             }
-
                             com.ga3t.nytrisync.ui.calendar.CalendarScreen(
                                 onBack = { navController.popBackStack() },
                                 onDayClick = { dateStr ->
@@ -350,14 +311,11 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
                         composable("day_detail/{date}") { backStackEntry ->
                             val date = backStackEntry.arguments?.getString("date") ?: ""
-
                             val refreshFromMeal by backStackEntry.savedStateHandle
                                 .getStateFlow("home_refresh", 0L)
                                 .collectAsState()
-
                             LaunchedEffect(refreshFromMeal) {
                                 if (refreshFromMeal != 0L) {
                                     navController.previousBackStackEntry
@@ -365,7 +323,6 @@ class MainActivity : ComponentActivity() {
                                         ?.set("calendar_refresh", System.currentTimeMillis())
                                 }
                             }
-
                             com.ga3t.nytrisync.ui.calendar.DayDetailScreen(
                                 date = date,
                                 onBack = {
@@ -376,14 +333,12 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
                         composable("ud_result") { backStackEntry ->
                             val parentEntry = remember(backStackEntry) {
                                 navController.getBackStackEntry("onboarding")
                             }
                             val vm: OnboardingViewModel =
                                 viewModel(parentEntry, factory = OnboardingViewModel.factory())
-
                             when {
                                 vm.ui.isLoading -> {
                                     Box(

@@ -1,9 +1,7 @@
 package com.caliq.calorie_service.models.dto;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-
 public record MainPageResponseNew(
         WeekCalory weekCalory,
         TodayCalory todayCalory,

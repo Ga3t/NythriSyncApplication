@@ -193,9 +193,9 @@
                     stroke-width="16"
                     stroke-linecap="round"
                     [attr.stroke-dasharray]="251.33"
-                    [attr.stroke-dashoffset]="251.33 - (getWaterProgress() / 100) * 251.33"></path>
+                    [attr.stroke-dashoffset]="251.33 - (getWaterProgressForChart() / 100) * 251.33"></path>
                   <path 
-                    *ngIf="getWaterProgress() > 3"
+                    *ngIf="getWaterProgressForChart() > 3"
                     class="semicircle-segment-end water-segment-end" 
                     d="M 20 100 A 80 80 0 0 1 180 100" 
                     fill="none" 
@@ -203,7 +203,7 @@
                     stroke-width="16"
                     stroke-linecap="round"
                     [attr.stroke-dasharray]="'6 251.33'"
-                    [attr.stroke-dashoffset]="251.33 - (getWaterProgress() / 100) * 251.33 - 3"></path>
+                    [attr.stroke-dashoffset]="251.33 - (getWaterProgressForChart() / 100) * 251.33 - 3"></path>
                 </svg>
                 <div class="semicircle-label">
                   <span class="semicircle-percentage">{{ getWaterProgress() | number:'1.0-0' }}%</span>

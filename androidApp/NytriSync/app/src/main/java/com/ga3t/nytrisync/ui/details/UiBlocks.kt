@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.details
-
+﻿package com.ga3t.nytrisync.ui.details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-
 @Composable
 fun HeaderBlock(
     title: @Composable () -> Unit,
@@ -44,7 +42,6 @@ fun HeaderBlock(
         }
     }
 }
-
 @Composable
 fun ColumnScope.SheetBlock(content: @Composable ColumnScope.() -> Unit) {
     Surface(

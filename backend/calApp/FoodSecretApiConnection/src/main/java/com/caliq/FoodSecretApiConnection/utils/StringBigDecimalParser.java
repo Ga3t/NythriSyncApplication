@@ -1,7 +1,5 @@
 package com.caliq.FoodSecretApiConnection.utils;
-
 import java.math.BigDecimal;
-
 public class StringBigDecimalParser {
    public static BigDecimal parseBigDecimalSafe(String value) {
         if (value == null || value.isBlank()) {
@@ -14,5 +12,4 @@ public class StringBigDecimalParser {
             return null;
         }
     }
-
 }

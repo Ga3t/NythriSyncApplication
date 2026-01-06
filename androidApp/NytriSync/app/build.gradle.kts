@@ -16,7 +16,7 @@ android {
         versionName = "1.0"
 
         vectorDrawables { useSupportLibrary = true }
-        buildConfigField("String", "BASE_URL", "\"https://nythrisync.livelydesert-69cc9f5c.polandcentral.azurecontainerapps.io/\"")
+        buildConfigField("String", "BASE_URL", "\"https://api.yellowpebble-0fd0af74.polandcentral.azurecontainerapps.io/\"")
     }
 
     buildTypes {

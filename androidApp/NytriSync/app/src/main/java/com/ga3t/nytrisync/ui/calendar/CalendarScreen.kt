@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.calendar
-
+﻿package com.ga3t.nytrisync.ui.calendar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,7 +24,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
@@ -34,9 +32,7 @@ fun CalendarScreen(
 ) {
     val vm: CalendarViewModel = viewModel(factory = CalendarViewModel.factory())
     val state = vm.uiState
-
     val listState = rememberLazyListState()
-
     LaunchedEffect(state.calendarData, vm.selectedYear) {
         if (!state.loading && state.calendarData.isNotEmpty()) {
             val now = LocalDate.now()
@@ -46,7 +42,6 @@ fun CalendarScreen(
             }
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -86,13 +81,12 @@ fun CalendarScreen(
                 CalendarContent(
                     data = state.calendarData,
                     onDayClick = onDayClick,
-                    listState = listState // Передаем состояние скролла
+                    listState = listState
                 )
             }
         }
     }
 }
-
 @Composable
 fun CalendarContent(
     data: List<CalendarResponse.CaloryDays>,
@@ -111,9 +105,8 @@ fun CalendarContent(
         }
         allMonths
     }
-
     LazyColumn(
-        state = listState, // Подключаем скролл
+        state = listState,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
@@ -124,7 +117,6 @@ fun CalendarContent(
         }
     }
 }
-
 @Composable
 fun MonthSection(
     monthInt: Int,
@@ -136,30 +128,24 @@ fun MonthSection(
     val firstDayOfMonth = LocalDate.of(year, monthInt, 1)
     val startOffset = firstDayOfMonth.dayOfWeek.value - 1
     val daysInMonth = firstDayOfMonth.lengthOfMonth()
-
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(monthName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             listOf("M", "T", "W", "T", "F", "S", "S").forEach {
                 Text(it, modifier = Modifier.weight(1f), textAlign = androidx.compose.ui.text.style.TextAlign.Center, fontSize = 12.sp, color = Color.Gray)
             }
         }
-
         val totalSlots = startOffset + daysInMonth
         val rows = (totalSlots + 6) / 7
-
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             for (r in 0 until rows) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     for (c in 0 until 7) {
                         val index = r * 7 + c
                         val dayNum = index - startOffset + 1
-
                         if (index >= startOffset && dayNum <= daysInMonth) {
                             val dateStr = LocalDate.of(year, monthInt, dayNum).toString()
                             val dayData = days.find { it.date == dateStr }
-
                             DayCell(
                                 modifier = Modifier.weight(1f).aspectRatio(1f),
                                 dayNum = dayNum,
@@ -176,7 +162,6 @@ fun MonthSection(
         }
     }
 }
-
 @Composable
 fun DayCell(
     modifier: Modifier,
@@ -187,26 +172,19 @@ fun DayCell(
 ) {
     val norm = dayData?.caloryNorm?.toFloat() ?: 0f
     val cons = dayData?.caloryCons?.toFloat() ?: 0f
-
     val ratio = if (norm > 0) (cons / norm).coerceIn(0f, 1f) else 0f
     val isGreen = cons > 0f
-
-
     val isFuture = try {
         LocalDate.parse(dateStr).isAfter(LocalDate.now())
     } catch (e: Exception) { true }
-
     val backgroundColor = if (isGreen) {
         Color(0xFF4CAF50).copy(alpha = 0.2f + (ratio * 0.8f))
     } else {
         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
     }
-
     val finalBg = if (isFuture) MaterialTheme.colorScheme.surface.copy(alpha = 0.5f) else backgroundColor
     val textColor = if (isGreen && ratio > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
-
     val finalTextColor = if (isFuture) MaterialTheme.colorScheme.onSurface.copy(alpha=0.3f) else textColor
-
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(4.dp))

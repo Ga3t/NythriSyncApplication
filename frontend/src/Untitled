@@ -1,9 +1,0 @@
---primary-color: #66bb6a;
-
-  /* Цвет фона хедера */
-  --header-bg: var(--primary-color);
-
-  /* Цвета форм */
-  --input-border: #444;
-  --input-border-focus: #888;
-  --input-border-valid: #444; /* НЕ зелёный */

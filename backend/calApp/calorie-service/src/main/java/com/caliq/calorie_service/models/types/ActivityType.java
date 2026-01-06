@@ -1,5 +1,4 @@
 package com.caliq.calorie_service.models.types;
-
 public enum ActivityType {
     MINIMUM_ACTIVITY,
     LOW_LEVEL_ACTIVITY,

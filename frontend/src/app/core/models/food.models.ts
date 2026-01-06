@@ -1,16 +1,14 @@
-export enum MealType {
+﻿export enum MealType {
   BREAKFAST = 'BREAKFAST',
   LUNCH = 'LUNCH',
   DINNER = 'DINNER',
   SNACK = 'SNACK'
 }
-
 export interface MealDto {
   dishes: {
     dish: Dish[];
   };
 }
-
 export interface Dish {
   type: string;
   code: string;
@@ -21,10 +19,10 @@ export interface Dish {
   carbohydrates: number;
   sugars?: number;
   fiber?: number;
+  cholesterol?: number;
   quantity?: number;
   unit?: string;
 }
-
 export interface FoodItem {
   id?: string;
   name: string;
@@ -37,7 +35,6 @@ export interface FoodItem {
   cholesterol?: number;
   barcode?: string;
 }
-
 export interface MealEntry {
   id: string;
   mealType: MealType;
@@ -48,4 +45,3 @@ export interface MealEntry {
   totalFats: number;
   totalCarbohydrates: number;
 }
-

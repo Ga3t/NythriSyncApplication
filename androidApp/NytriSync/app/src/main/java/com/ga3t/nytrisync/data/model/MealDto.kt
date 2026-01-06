@@ -1,14 +1,11 @@
-package com.ga3t.nytrisync.data.model
-
+﻿package com.ga3t.nytrisync.data.model
 import java.math.BigDecimal
-
 data class MealDto(
     val dishes: Dishes
 ) {
     data class Dishes(
         val dish: List<Dish>
     )
-
     data class Dish(
         val type: String,
         val code: String,

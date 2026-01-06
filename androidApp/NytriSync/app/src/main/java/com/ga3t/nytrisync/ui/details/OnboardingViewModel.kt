@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.details
-
+﻿package com.ga3t.nytrisync.ui.details
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,7 +11,6 @@ import com.ga3t.nytrisync.data.repository.UserDetailsRepository
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 private fun isoDate(y: Int, m: Int, d: Int) = "%04d-%02d-%02d".format(y, m, d)
-
 data class OnboardingState(
     val currentWeight: BigDecimal = BigDecimal("70"),
     val height: BigDecimal = BigDecimal("170"),
@@ -28,7 +26,6 @@ data class OnboardingState(
     val result: UserDetailsResponse? = null,
     val showGoalMismatchWarning: Boolean = false
 )
-
 private val activityEntries = listOf(
     "MINIMUM_ACTIVITY" to BigDecimal("1.2"),
     "LOW_LEVEL_ACTIVITY" to BigDecimal("1.375"),
@@ -36,17 +33,13 @@ private val activityEntries = listOf(
     "HIGH_LEVEL_ACTIVITY" to BigDecimal("1.73"),
     "EXTREMELY_ACTIVITY" to BigDecimal("1.9")
 )
-
 class OnboardingViewModel(
     private val repo: UserDetailsRepository
 ) : ViewModel() {
-
     var ui by mutableStateOf(OnboardingState())
         private set
-
     fun setCurrentWeight(v: Float) { ui = ui.copy(currentWeight = BigDecimal(v.toString())) }
     fun setHeight(v: Float) { ui = ui.copy(height = BigDecimal(v.toString())) }
-
     fun setBirth(y: Int? = null, m: Int? = null, d: Int? = null) {
         ui = ui.copy(
             birthYear = y ?: ui.birthYear,
@@ -54,18 +47,15 @@ class OnboardingViewModel(
             birthDay = d ?: ui.birthDay
         )
     }
-
     fun setSex(s: SexType) { ui = ui.copy(sex = s) }
     fun setGoal(g: GoalType) {
         val warn = shouldWarn(ui.currentWeight, ui.wantedWeight, g)
         ui = ui.copy(goal = g, showGoalMismatchWarning = warn)
     }
-
     fun setActivityIndex(idx: Int) {
         val clamped = idx.coerceIn(0, activityEntries.lastIndex)
         ui = ui.copy(activityIndex = clamped)
     }
-
     fun setWantedWeight(v: Float) {
         val wanted = BigDecimal(v.toString())
         ui = ui.copy(
@@ -73,7 +63,6 @@ class OnboardingViewModel(
             showGoalMismatchWarning = shouldWarn(ui.currentWeight, wanted, ui.goal)
         )
     }
-
     private fun shouldWarn(current: BigDecimal, wanted: BigDecimal, goal: GoalType?): Boolean {
         if (goal == null) return false
         return when (goal) {
@@ -82,7 +71,6 @@ class OnboardingViewModel(
             GoalType.MAINTENANCE -> wanted != current
         }
     }
-
     fun applySuggestedGoal() {
         val newGoal = when {
             ui.wantedWeight > ui.currentWeight -> GoalType.GAIN
@@ -91,14 +79,11 @@ class OnboardingViewModel(
         }
         ui = ui.copy(goal = newGoal, showGoalMismatchWarning = false)
     }
-
     fun submit() {
         val sex = ui.sex ?: return
         val goal = ui.goal ?: GoalType.MAINTENANCE
         val (_, activityCoef) = activityEntries[ui.activityIndex]
-
         val date = isoDate(ui.birthYear, ui.birthMonth, ui.birthDay)
-
         val dto = UserDetailsDto(
             currentWeight = ui.currentWeight,
             birthDay = date,
@@ -108,7 +93,6 @@ class OnboardingViewModel(
             wantedWeight = ui.wantedWeight,
             height = ui.height
         )
-
         viewModelScope.launch {
             ui = ui.copy(isLoading = true, error = null)
             val res = repo.setDetails(dto)
@@ -117,9 +101,7 @@ class OnboardingViewModel(
                 .onFailure { e -> ui = ui.copy(error = e.message ?: "Submit failed") }
         }
     }
-
     fun activityLabel(): String = activityEntries[ui.activityIndex].first
-
     companion object {
         fun factory(): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

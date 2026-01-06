@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.meal
-
+﻿package com.ga3t.nytrisync.ui.meal
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,7 +14,6 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
-
 data class MealItem(
     val type: String,
     val code: String,
@@ -38,7 +36,6 @@ data class MealItem(
         )
     }
 }
-
 data class Nutrients100g(
     val calories: BigDecimal,
     val fat: BigDecimal,
@@ -48,15 +45,13 @@ data class Nutrients100g(
     val fiber: BigDecimal,
     val cholesterol: BigDecimal
 )
-
 data class DailyNorms(
     val protein: BigDecimal = BigDecimal.ZERO,
     val carbs: BigDecimal = BigDecimal.ZERO,
     val fat: BigDecimal = BigDecimal.ZERO,
-    val sugar: BigDecimal = BigDecimal("50"), // Standard daily norm: 50g
-    val cholesterol: BigDecimal = BigDecimal("300") // Standard daily norm: 300mg
+    val sugar: BigDecimal = BigDecimal("50"),
+    val cholesterol: BigDecimal = BigDecimal("300")
 )
-
 data class CustomFoodInput(
     val name: String = "",
     val grams: String = "100",
@@ -68,32 +63,24 @@ data class CustomFoodInput(
     val fiber: String = "",
     val cholesterol: String = ""
 )
-
 data class MealBuilderUiState(
     val mealType: MealType,
     val targetDate: String,
     val isLoading: Boolean = false,
     val error: String? = null,
-
     val consumedTodayForMeal: BigDecimal = BigDecimal.ZERO,
-    
     val dailyNorms: DailyNorms = DailyNorms(),
-
     val query: String = "",
     val page: Int = 0,
     val totalResults: String = "0",
     val results: List<FoodSearchResponse.FoodItem> = emptyList(),
     val isSearching: Boolean = false,
-
     val selected: FoodResponse? = null,
     val gramsInput: String = "100",
-
     val selectedBarcode: FoodDataResponse? = null,
     val barcodeGramsInput: String = "100",
-    
     val showCustomFood: Boolean = false,
     val customFoodInput: CustomFoodInput = CustomFoodInput(),
-
     val existingDishes: List<MealDto.Dish> = emptyList(),
     val items: List<MealItem> = emptyList()
 ) {
@@ -103,7 +90,6 @@ data class MealBuilderUiState(
             val newDishes = items.map { it.toDish() }
             fun sum(selector: (MealDto.Dish) -> BigDecimal): BigDecimal =
                 (existing + newDishes).fold(BigDecimal.ZERO) { acc, d -> acc + selector(d) }
-
             return Nutrients100g(
                 calories = sum { it.calories },
                 fat = sum { it.fat },
@@ -111,24 +97,19 @@ data class MealBuilderUiState(
                 carbohydrates = sum { it.carbohydrates },
                 sugars = sum { it.sugars },
                 fiber = sum { it.fiber },
-
                 cholesterol = BigDecimal.ZERO
             )
         }
 }
-
 class MealBuilderViewModel(
     private val mealType: MealType,
     private val targetDate: String,
     private val calorieRepo: CalorieRepository,
     private val foodRepo: FoodRepository
 ) : ViewModel() {
-
     var ui by mutableStateOf(MealBuilderUiState(mealType = mealType, targetDate = targetDate))
         private set
-
     init {
-
         viewModelScope.launch {
             calorieRepo.getMainPage().onSuccess { mp ->
                 val cal = mp.mealPage.find { it.mealType.equals(mealType.name, true) }?.caloryCons ?: BigDecimal.ZERO
@@ -142,7 +123,6 @@ class MealBuilderViewModel(
                 )
             }
         }
-
         viewModelScope.launch {
             ui = ui.copy(isLoading = true, error = null)
             val res = calorieRepo.getMealByDate(date = targetDate, mealType = mealType.name)
@@ -151,14 +131,11 @@ class MealBuilderViewModel(
                 val existing = r.mealDto?.dishes?.dish ?: emptyList()
                 ui = ui.copy(existingDishes = existing)
             }.onFailure { e ->
-
                 ui = ui.copy(error = e.message ?: "Show meal error (ignored)")
             }
         }
     }
-
     fun onQueryChange(q: String) { ui = ui.copy(query = q) }
-
     private var searchJob: Job? = null
     fun search(page: Int = 0) {
         val q = ui.query.trim()
@@ -179,9 +156,7 @@ class MealBuilderViewModel(
             }
         }
     }
-
     fun loadMore() = search(ui.page + 1)
-
     fun selectFood(id: String) {
         viewModelScope.launch {
             ui = ui.copy(isLoading = true, error = null)
@@ -191,10 +166,8 @@ class MealBuilderViewModel(
                 .onFailure { e -> ui = ui.copy(error = e.message ?: "Details error") }
         }
     }
-
     fun clearSelection() { ui = ui.copy(selected = null) }
     fun setGramsInput(v: String) { ui = ui.copy(gramsInput = v.filter { it.isDigit() }) }
-
     fun addSelectedFood() {
         val f = ui.selected ?: return
         val grams = ui.gramsInput.toBigDecimalOrNull() ?: BigDecimal("100")
@@ -215,16 +188,13 @@ class MealBuilderViewModel(
         )
         ui = ui.copy(items = ui.items + item, selected = null)
     }
-
     fun removeItem(index: Int) {
         if (index in ui.items.indices) {
             val newList = ui.items.toMutableList().also { it.removeAt(index) }
             ui = ui.copy(items = newList)
         }
     }
-
     fun clearResults() { ui = ui.copy(results = emptyList(), page = 0, totalResults = "0") }
-
     fun onBarcodeDetected(barcode: String) {
         viewModelScope.launch {
             ui = ui.copy(isLoading = true, error = null)
@@ -234,14 +204,11 @@ class MealBuilderViewModel(
                 .onFailure { e -> ui = ui.copy(error = e.message ?: "Barcode error") }
         }
     }
-
-    fun setBarcodeGramsInput(v: String) { ui = ui.copy(barcodeGramsInput = v.filter { it.isDigit() }) }
+    fun setBarcodeGramsInput(v: String) { ui = ui.copy(barcodeGramsInput = v.filter { c -> c.isDigit() || c == '.' }) }
     fun clearBarcodeSelection() { ui = ui.copy(selectedBarcode = null) }
-    
     fun showCustomFood() { ui = ui.copy(showCustomFood = true) }
     fun hideCustomFood() { ui = ui.copy(showCustomFood = false, customFoodInput = CustomFoodInput()) }
     fun updateCustomFoodInput(input: CustomFoodInput) { ui = ui.copy(customFoodInput = input) }
-    
     fun addCustomFood() {
         val input = ui.customFoodInput
         val name = input.name.trim()
@@ -249,13 +216,11 @@ class MealBuilderViewModel(
             ui = ui.copy(error = "Enter food name")
             return
         }
-        
         val grams = input.grams.toBigDecimalOrNull() ?: BigDecimal("100")
         if (grams <= BigDecimal.ZERO) {
             ui = ui.copy(error = "Enter valid weight")
             return
         }
-        
         val calories = input.calories.toBigDecimalOrNull() ?: BigDecimal.ZERO
         val protein = input.protein.toBigDecimalOrNull() ?: BigDecimal.ZERO
         val fat = input.fat.toBigDecimalOrNull() ?: BigDecimal.ZERO
@@ -263,8 +228,6 @@ class MealBuilderViewModel(
         val sugar = input.sugar.toBigDecimalOrNull() ?: BigDecimal.ZERO
         val fiber = input.fiber.toBigDecimalOrNull() ?: BigDecimal.ZERO
         val cholesterol = input.cholesterol.toBigDecimalOrNull() ?: BigDecimal.ZERO
-        
-        // Convert to per 100g values
         val ratio = BigDecimal(100).divide(grams, 4, RoundingMode.HALF_UP)
         val per100 = Nutrients100g(
             calories = calories.multiply(ratio),
@@ -275,7 +238,6 @@ class MealBuilderViewModel(
             fiber = fiber.multiply(ratio),
             cholesterol = cholesterol.multiply(ratio)
         )
-        
         val item = MealItem(
             type = "CUSTOM",
             code = "custom_${System.currentTimeMillis()}",
@@ -285,7 +247,6 @@ class MealBuilderViewModel(
         )
         ui = ui.copy(items = ui.items + item, showCustomFood = false, customFoodInput = CustomFoodInput())
     }
-
     fun addBarcodeSelected() {
         val fd = ui.selectedBarcode ?: return
         val grams = ui.barcodeGramsInput.toBigDecimalOrNull() ?: BigDecimal("100")
@@ -308,11 +269,9 @@ class MealBuilderViewModel(
         )
         ui = ui.copy(items = ui.items + item, selectedBarcode = null)
     }
-
     fun save(onSuccess: () -> Unit) {
         val combinedDishes = ui.existingDishes + ui.items.map { it.toDish() }
         if (combinedDishes.isEmpty()) { ui = ui.copy(error = "Add at least one item"); return }
-
         val dto = MealDto(
             dishes = MealDto.Dishes(combinedDishes)
         )
@@ -324,7 +283,6 @@ class MealBuilderViewModel(
                 .onFailure { e -> ui = ui.copy(error = e.message ?: "Save error") }
         }
     }
-
     companion object {
         fun factory(mealType: MealType, date: String): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

@@ -1,8 +1,7 @@
-import { NgModule } from '@angular/core';
+﻿import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LatinOnlyInputDirective } from '../core/directives/latin-only-input.directive';
 import { ForcePlaceholderDirective } from '../core/directives/force-placeholder.directive';
-
 @NgModule({
   declarations: [
     LatinOnlyInputDirective,
@@ -17,4 +16,3 @@ import { ForcePlaceholderDirective } from '../core/directives/force-placeholder.
   ]
 })
 export class SharedModule { }
-

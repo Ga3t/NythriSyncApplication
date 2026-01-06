@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.home
-
+﻿package com.ga3t.nytrisync.ui.home
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -30,8 +29,6 @@ import com.ga3t.nytrisync.data.model.MealType
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.min
-
-// --- Header Icon ---
 @Composable
 fun HeaderIcon(
     icon: ImageVector,
@@ -53,8 +50,6 @@ fun HeaderIcon(
         )
     }
 }
-
-// --- Calories Block ---
 @Composable
 fun TodayCaloriesBlock(today: MainPageResponse.TodayCalory) {
     val cons = today.todayCaloryCons.toInt()
@@ -64,15 +59,12 @@ fun TodayCaloriesBlock(today: MainPageResponse.TodayCalory) {
     val absDiff = kotlin.math.abs(diff)
     val verb = if (leftMode) "LEFT" else "MORE"
     val amountText = "$absDiff kcal"
-
     val yellowSoft = Color(0xFFFEF3C7)
     val yellowDark = Color(0xFFB39B38)
     val yellowText = Color(0xFF78350F)
-
     val purplSoft = Color(0xFFC7CAFF)
     val purplDark = Color(0x91717291)
     val purplText = Color(0x80252548)
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,7 +98,7 @@ fun TodayCaloriesBlock(today: MainPageResponse.TodayCalory) {
                         Icon(
                             painter = painterResource(id = R.drawable.normal_meal_icon),
                             contentDescription = "Goal",
-                            tint = Color.Black,
+                            tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -115,7 +107,6 @@ fun TodayCaloriesBlock(today: MainPageResponse.TodayCalory) {
                 }
             }
         }
-
         ElevatedCard(
             modifier = Modifier
                 .weight(0.42f)
@@ -142,7 +133,7 @@ fun TodayCaloriesBlock(today: MainPageResponse.TodayCalory) {
                         Icon(
                             painter = painterResource(id = R.drawable.consumed_meal_icon),
                             contentDescription = "Eaten",
-                            tint = Color.Black,
+                            tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -162,8 +153,6 @@ fun TodayCaloriesBlock(today: MainPageResponse.TodayCalory) {
         }
     }
 }
-
-// --- Water Block ---
 @Composable
 fun WaterBlock(
     water: MainPageResponse.TodayWater,
@@ -176,15 +165,12 @@ fun WaterBlock(
     val absDiff = kotlin.math.abs(diff)
     val verb = if (leftMode) "LEFT" else "MORE"
     val amountText = "$absDiff ml"
-
     val aquaSoft = Color(0xFFE0F7FA)
     val aquaDark = Color(0xFF26C6DA)
     val aquaText = Color(0xFF004D40)
-
     val blueSoft = Color(0xFFE3F2FD)
     val blueDark = Color(0xFF64B5F6)
     val blueText = Color(0xFF0D47A1)
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,7 +204,7 @@ fun WaterBlock(
                         Icon(
                             painter = painterResource(id = R.drawable.normal_water_icon),
                             contentDescription = "Water goal",
-                            tint = Color.Black,
+                            tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -227,7 +213,6 @@ fun WaterBlock(
                 }
             }
         }
-
         ElevatedCard(
             onClick = onAddWaterClick,
             modifier = Modifier
@@ -261,7 +246,7 @@ fun WaterBlock(
                         Icon(
                             painter = painterResource(id = R.drawable.consumed_water_icon),
                             contentDescription = "Water consumed",
-                            tint = Color.Black,
+                            tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -281,8 +266,6 @@ fun WaterBlock(
         }
     }
 }
-
-// --- Macros ---
 @Composable
 fun MacrosRow(
     carbs: MainPageResponse.TodayCarbs,
@@ -298,7 +281,6 @@ fun MacrosRow(
         MacroCard("Fat", fat.todayFatCons, fat.todayFatNorm, color = Color(0xFFEF5350), modifier = Modifier.weight(1f))
     }
 }
-
 @Composable
 fun MacroCard(
     title: String,
@@ -309,11 +291,9 @@ fun MacroCard(
 ) {
     val consInt = cons.setScale(0, RoundingMode.HALF_UP).toInt()
     val normInt = norm.setScale(0, RoundingMode.HALF_UP).toInt()
-
     val ratio = if (normInt > 0) min(1f, consInt.toFloat() / normInt.toFloat()) else 0f
     val container = softContainerColor(color, MaterialTheme.colorScheme.surface, tintWeight = 0.16f)
     val track = color.copy(alpha = 0.18f)
-
     ElevatedCard(
         modifier = modifier.heightIn(min = 156.dp),
         colors = CardDefaults.elevatedCardColors(containerColor = container)
@@ -328,9 +308,9 @@ fun MacroCard(
                 title,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.align(Alignment.TopCenter)
             )
-
             Box(
                 modifier = Modifier
                     .size(72.dp)
@@ -344,7 +324,6 @@ fun MacroCard(
                     trackColor = track,
                     modifier = Modifier.size(72.dp)
                 )
-
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -366,8 +345,6 @@ fun MacroCard(
         }
     }
 }
-
-// --- Meals List ---
 @Composable
 fun MealsList(
     meals: List<MainPageResponse.MealPage>,
@@ -386,7 +363,7 @@ fun MealsList(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(t, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+                        Text(t, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
                         Text("$cal kcal", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     FilledTonalButton(
@@ -401,8 +378,6 @@ fun MealsList(
         }
     }
 }
-
-
 @Composable
 fun RingProgress(
     progress: Float,
@@ -417,7 +392,6 @@ fun RingProgress(
         animationSpec = tween(durationMillis = 700),
         label = "ring-progress"
     ).value
-
     Box(modifier = Modifier.size(size), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val strokePx = thickness.toPx()
@@ -428,7 +402,6 @@ fun RingProgress(
                 (canvasSize.width - diameter) / 2f,
                 (canvasSize.height - diameter) / 2f
             )
-
             drawArc(
                 color = trackColor,
                 startAngle = 0f,
@@ -438,7 +411,6 @@ fun RingProgress(
                 size = arcSize,
                 topLeft = topLeft
             )
-
             drawArc(
                 color = color,
                 startAngle = startAngle,
@@ -451,7 +423,6 @@ fun RingProgress(
         }
     }
 }
-
 fun softContainerColor(base: Color, surface: Color, tintWeight: Float = 0.16f): Color {
     val t = tintWeight.coerceIn(0f, 1f)
     val r = base.red * t + surface.red * (1f - t)

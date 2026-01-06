@@ -1,9 +1,6 @@
 package com.caliq.api_conection_service.model;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.math.BigDecimal;
-
 public record AddFoodDto(
         @JsonProperty("barcode") String barcode,
         @JsonProperty("brand_name") String brand_name,

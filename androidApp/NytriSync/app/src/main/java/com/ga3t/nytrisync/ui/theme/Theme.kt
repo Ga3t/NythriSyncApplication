@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.theme
-
+﻿package com.ga3t.nytrisync.ui.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,27 +14,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
-// Light green color scheme
 private val LightGreenPrimary = Color(0xFF66BB6A)
 private val LightGreenOnPrimary = Color(0xFFFFFFFF)
 private val LightGreenPrimaryContainer = Color(0xFFC8E6C9)
 private val LightGreenOnPrimaryContainer = Color(0xFF1B5E20)
-
 private val LightColors = lightColorScheme(
     primary = LightGreenPrimary,
     onPrimary = LightGreenOnPrimary,
     primaryContainer = LightGreenPrimaryContainer,
     onPrimaryContainer = LightGreenOnPrimaryContainer
 )
-
 private val DarkColors = darkColorScheme(
     primary = LightGreenPrimary,
     onPrimary = LightGreenOnPrimary,
     primaryContainer = LightGreenPrimaryContainer,
     onPrimaryContainer = LightGreenOnPrimaryContainer
 )
-
 private val RoundedShapes = Shapes(
     extraSmall = RoundedCornerShape(12.dp),
     small = RoundedCornerShape(16.dp),
@@ -43,7 +37,6 @@ private val RoundedShapes = Shapes(
     large = RoundedCornerShape(24.dp),
     extraLarge = RoundedCornerShape(40.dp)
 )
-
 private val AppTypography = Typography().run {
     Typography(
         displayLarge = displayLarge.copy(fontFamily = InterFamily),
@@ -63,7 +56,6 @@ private val AppTypography = Typography().run {
         labelSmall = labelSmall.copy(fontFamily = InterFamily)
     )
 }
-
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -76,7 +68,6 @@ fun AppTheme(
         } else {
             if (darkTheme) DarkColors else LightColors
         }
-
     MaterialTheme(
         colorScheme = colorScheme,
         shapes = RoundedShapes,

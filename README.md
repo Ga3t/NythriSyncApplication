@@ -40,14 +40,6 @@ NythriSync/
 └── README.md           # This file
 ```
 
-## Download Mobile App
-
-Download the NythriSync Android mobile application:
-
-**[Download NythriSync APK](androidApp/NytriSync/app/build/outputs/apk/debug/app-debug.apk)**
-
-> **Note**: After downloading, you may need to enable "Install from unknown sources" in your Android device settings to install the APK file.
-
 ## Features
 
 - Real-time calorie tracking
@@ -62,20 +54,136 @@ Download the NythriSync Android mobile application:
 - **Internet Connection**: Required for all features
 - **Android**: Android device (for mobile app)
 - **Web Browser**: Modern browser for web application
+- **Node.js**: Version 18 or higher (for frontend)
+- **npm**: Version 9 or higher (for frontend)
 
-## Getting Started
+## User Guide
 
-### Backend Services
+### How to Run the Frontend Application
 
-Navigate to the `backend/calApp` directory and refer to the README there for backend setup instructions.
+Follow these step-by-step instructions to run the NythriSync web application on your computer:
 
-### Frontend
+#### Step 1: Install Prerequisites
 
-Navigate to the `frontend` directory and refer to the README there for frontend setup instructions.
+Before running the frontend, make sure you have the required software installed:
 
-### Mobile App
+1. **Install Node.js**:
+   - Visit [nodejs.org](https://nodejs.org/)
+   - Download and install Node.js version 18 or higher
+   - This will also install npm (Node Package Manager)
 
-Download the APK file using the link above and install it on your Android device.
+2. **Verify Installation**:
+   - Open a terminal or command prompt
+   - Run: `node --version` (should show v18 or higher)
+   - Run: `npm --version` (should show v9 or higher)
+
+#### Step 2: Navigate to Frontend Directory
+
+1. Open a terminal or command prompt
+2. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+#### Step 3: Install Dependencies
+
+1. Install all required packages by running:
+   ```bash
+   npm install
+   ```
+   - This may take a few minutes as it downloads all necessary dependencies
+   - Wait for the installation to complete
+
+#### Step 4: Install Angular CLI (if not already installed)
+
+1. Install Angular CLI globally:
+   ```bash
+   npm install -g @angular/cli
+   ```
+
+#### Step 5: Start the Development Server
+
+1. Start the frontend application:
+   ```bash
+   ng serve
+   ```
+   or alternatively:
+   ```bash
+   npm start
+   ```
+
+2. Wait for the compilation to complete. You should see a message like:
+   ```
+   ✔ Compiled successfully.
+   ** Angular Live Development Server is listening on localhost:4200
+   ```
+
+#### Step 6: Access the Application
+
+1. Open your web browser (Chrome, Firefox, Edge, etc.)
+2. Navigate to: `http://localhost:4200`
+3. The NythriSync web application should now be running
+
+**Note**: The application will automatically reload if you make any changes to the source files. Keep the terminal window open while using the application.
+
+### How to Download and Install the Android App
+
+Follow these step-by-step instructions to install the NythriSync mobile application on your Android device:
+
+#### Step 1: Download the APK File
+
+1. Click on the download link below:
+   **[Download NythriSync APK](androidApp/NytriSync/app/build/outputs/apk/debug/app-debug.apk)**
+
+2. The download will start automatically
+3. Wait for the download to complete
+4. The APK file (`app-debug.apk`) will be saved to your device's Downloads folder
+
+**Alternative**: If you're on a computer, download the file and transfer it to your Android device via USB, email, or cloud storage.
+
+#### Step 2: Enable Installation from Unknown Sources
+
+Since the app is not from the Google Play Store, you need to allow installation from unknown sources:
+
+1. **On your Android device**, go to **Settings**
+2. Navigate to **Security** or **Privacy** (location may vary by device)
+3. Look for **"Install unknown apps"** or **"Unknown sources"**
+4. Select your browser or file manager (depending on where you downloaded the file)
+5. Enable **"Allow from this source"** or toggle the switch to **ON**
+
+**Note**: On newer Android versions (Android 8.0+), you may need to allow installation for the specific app you used to download the file (e.g., Chrome, Files app).
+
+#### Step 3: Install the APK
+
+1. **Using File Manager**:
+   - Open the **Files** or **File Manager** app on your device
+   - Navigate to the **Downloads** folder
+   - Tap on the `app-debug.apk` file
+   - Tap **Install** when prompted
+   - Wait for the installation to complete
+
+2. **Using Downloads Notification**:
+   - Pull down the notification bar
+   - Tap on the download notification for `app-debug.apk`
+   - Tap **Install** when prompted
+
+#### Step 4: Launch the App
+
+1. After installation is complete, you'll see an **"Open"** button
+2. Tap **Open** to launch NythriSync immediately, or
+3. Find the **NythriSync** app icon in your app drawer and tap it to open
+
+#### Step 5: Grant Permissions (if needed)
+
+1. When you first open the app, it may request certain permissions (Internet access, etc.)
+2. Review the permissions and tap **Allow** to continue
+3. You're now ready to use NythriSync on your Android device!
+
+**Troubleshooting**:
+
+- **"Install blocked"**: Make sure you've enabled "Install from unknown sources" for your browser/file manager
+- **"App not installed"**: The file may be corrupted. Try downloading again
+- **"Parse error"**: The APK file might be incomplete. Delete it and download again
 
 ## Security
 

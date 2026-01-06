@@ -1,7 +1,5 @@
-package com.ga3t.nytrisync.data.model
-
+﻿package com.ga3t.nytrisync.data.model
 import java.math.BigDecimal
-
 data class UpdateUserDetailsDto(
     val curentWeight: BigDecimal,
     val birthDay: String,

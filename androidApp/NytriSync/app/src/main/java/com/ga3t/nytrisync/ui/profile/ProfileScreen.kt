@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.ui.profile
-
+﻿package com.ga3t.nytrisync.ui.profile
 import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,7 +24,6 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 data class ProfileUiState(
     val loading: Boolean = true,
     val error: String? = null,
@@ -39,18 +37,13 @@ data class ProfileUiState(
     val editActivity: BigDecimal? = null,
     val editGoal: String? = null
 )
-
 class ProfileViewModel(
     private val repo: UserDetailsRepository
 ) : ViewModel() {
-
     var ui by mutableStateOf(ProfileUiState())
         private set
-
     private val iso = DateTimeFormatter.ISO_DATE
-
     init { load() }
-
     fun load() {
         ui = ui.copy(loading = true, error = null)
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
@@ -72,7 +65,6 @@ class ProfileViewModel(
                 }
         }
     }
-
     fun setNewWeight(kg: BigDecimal) {
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
             repo.setNewWeighing(kg)
@@ -82,23 +74,18 @@ class ProfileViewModel(
                 .onFailure { e -> ui = ui.copy(error = e.message ?: "Weighing failed") }
         }
     }
-
     fun updateActivity(target: BigDecimal) =
         applyUpdate(activity = target)
-
     fun updateGoal(target: String) =
         applyUpdate(goal = target)
-
     fun showOtherWarning() { ui = ui.copy(showOtherWarn = true) }
     fun cancelOtherWarning() { ui = ui.copy(showOtherWarn = false) }
     fun startOtherEdit() { ui = ui.copy(showOtherWarn = false, editingOther = true) }
     fun cancelOtherEdit() { ui = ui.copy(editingOther = false) }
-
     fun setBirth(date: LocalDate) { ui = ui.copy(editBirth = date) }
     fun setSex(sex: String) { ui = ui.copy(editSex = sex) }
     fun setHeight(h: BigDecimal) { ui = ui.copy(editHeight = h) }
     fun setWanted(w: BigDecimal) { ui = ui.copy(editWanted = w) }
-
     fun saveOther() =
         applyUpdate(
             birth = ui.editBirth,
@@ -106,7 +93,6 @@ class ProfileViewModel(
             height = ui.editHeight,
             wanted = ui.editWanted
         )
-
     private fun applyUpdate(
         activity: BigDecimal? = null,
         goal: String? = null,
@@ -131,7 +117,6 @@ class ProfileViewModel(
                 .onFailure { e -> ui = ui.copy(error = e.message ?: "Update failed") }
         }
     }
-
     companion object {
         fun factory(): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -141,12 +126,10 @@ class ProfileViewModel(
         }
     }
 }
-
 @Composable
 fun ProfileScreen(onBack: () -> Unit) {
     val vm: ProfileViewModel = viewModel(factory = ProfileViewModel.factory())
     val ui = vm.ui
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -191,7 +174,6 @@ fun ProfileScreen(onBack: () -> Unit) {
                             )
                         }
                     }
-
                     ElevatedCard {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             Text("Activity level", style = MaterialTheme.typography.titleMedium)
@@ -201,15 +183,12 @@ fun ProfileScreen(onBack: () -> Unit) {
                             )
                         }
                     }
-
-
                     ElevatedCard {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             Text("Goal", style = MaterialTheme.typography.titleMedium)
                             GoalChips(selected = info.goalType, onSelect = { vm.updateGoal(it) })
                         }
                     }
-
                     ElevatedCard {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             Text("Other", style = MaterialTheme.typography.titleMedium)
@@ -238,7 +217,6 @@ fun ProfileScreen(onBack: () -> Unit) {
                         }
                     }
                 }
-
                 if (ui.showOtherWarn) {
                     AlertDialog(
                         onDismissRequest = vm::cancelOtherWarning,
@@ -252,7 +230,6 @@ fun ProfileScreen(onBack: () -> Unit) {
         }
     }
 }
-
 @Composable
 private fun NewWeightSection(
     initial: BigDecimal,
@@ -299,13 +276,11 @@ private fun NewWeightSection(
         dismissButton = { TextButton(onClick = { show = false }) { Text("Cancel") } }
     )
 }
-
 @Composable
 private fun ActivityChips(
     selected: BigDecimal,
     onSelect: (BigDecimal) -> Unit
 ) {
-
     val presets = listOf(
         BigDecimal("1.2")   to "MINIMUM_ACTIVITY",
         BigDecimal("1.375") to "LOW_LEVEL_ACTIVITY",
@@ -313,7 +288,6 @@ private fun ActivityChips(
         BigDecimal("1.73")  to "HIGH_LEVEL_ACTIVITY",
         BigDecimal("1.9")   to "EXTREMELY_ACTIVITY"
     )
-
     androidx.compose.foundation.layout.FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -333,13 +307,11 @@ private fun GoalChips(
     selected: String,
     onSelect: (String) -> Unit
 ) {
-
     val options = listOf(
         "LOSS"     to "Lose",
         "MAINTAIN" to "Maintain",
         "GAIN"     to "Gain"
     )
-
     androidx.compose.foundation.layout.FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -354,7 +326,6 @@ private fun GoalChips(
         }
     }
 }
-
 @Composable
 private fun OtherEditor(
     birth: LocalDate,
@@ -397,28 +368,24 @@ private fun OtherEditor(
                 FilterChip(selected = sex == v, onClick = { onSex(v) }, label = { Text(label) })
             }
         }
-
         Text("Height (cm)")
         InlineNumberPicker(
             value = height.toInt(),
             range = 120..220,
             onChange = { onHeight(BigDecimal(it)) }
         )
-
         Text("Wanted weight (kg)")
         InlineNumberPicker(
             value = wanted.toInt(),
             range = 30..300,
             onChange = { onWanted(BigDecimal(it)) }
         )
-
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = onCancel, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.large) { Text("Cancel") }
             Button(onClick = onSave, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.large) { Text("Save") }
         }
     }
 }
-
 @Composable
 private fun InlineNumberPicker(
     value: Int,

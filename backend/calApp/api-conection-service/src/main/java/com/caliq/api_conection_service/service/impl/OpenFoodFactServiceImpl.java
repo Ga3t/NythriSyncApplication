@@ -1,5 +1,4 @@
 package com.caliq.api_conection_service.service.impl;
-
 import com.caliq.api_conection_service.exception.ProductNotFoundException;
 import com.caliq.api_conection_service.model.AddFoodDto;
 import com.caliq.api_conection_service.model.FoodDataResponse;
@@ -12,42 +11,33 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
-
-
 @Service
 @Primary
 public class OpenFoodFactServiceImpl implements OpenFoodFactService {
-
     private final RestClient restClient;
     private OpenFoodFactRepository openFoodFactRepository;
-
     public OpenFoodFactServiceImpl(RestClient restClient, OpenFoodFactRepository openFoodFactRepository) {
         this.restClient = restClient;
         this.openFoodFactRepository = openFoodFactRepository;
     }
-
     @Cacheable(value = "foodDataCache", key = "#barcode")
     @Transactional
     public FoodDataResponse getFoodInfo(String barcode) {
-
         FoodEntity foodEntity = openFoodFactRepository
                 .findById(Long.valueOf(barcode))
                 .orElseGet(() -> {
                     String uri = "https://world.openfoodfacts.org/api/v2/product/{barcode}" +
                             "?fields=product_name,nutriscore_data,nutriments,allergens_tags";
-
                     FoodInfoDto dto = restClient.get()
                             .uri(uri, barcode)
                             .retrieve()
                             .body(FoodInfoDto.class);
-
                     if (dto == null || dto.getProduct() == null) {
                         throw new ProductNotFoundException("Product not found in OpenFoodFacts API, please add it manually or try again");
                     }
                     FoodEntity newEntity = new FoodEntity();
                     newEntity.setId(Long.valueOf(dto.getCode()));
                     newEntity.setName(dto.getProduct().getProductName());
-
                     FoodInfoDto.Nutriments n = dto.getProduct().getNutriments();
                     if (n != null) {
                         newEntity.setKcal(n.getEnergyKcal_100g());
@@ -60,8 +50,6 @@ public class OpenFoodFactServiceImpl implements OpenFoodFactService {
                     }
                     return openFoodFactRepository.save(newEntity);
                 });
-
-
         return new FoodDataResponse(
                 String.valueOf(foodEntity.getId()),
                 foodEntity.getName(),
@@ -75,11 +63,9 @@ public class OpenFoodFactServiceImpl implements OpenFoodFactService {
                 null
         );
     }
-
     @Override
     @Transactional
     public FoodDataResponse addFoodByBarcode(AddFoodDto addFoodDto) {
-
         FoodEntity foodEntity =openFoodFactRepository
                 .findById(Long.valueOf(addFoodDto.barcode()))
                 .orElseGet(()->{
@@ -98,7 +84,6 @@ public class OpenFoodFactServiceImpl implements OpenFoodFactService {
                     );
                     return openFoodFactRepository.save(newFood);
                 });
-
         FoodDataResponse response = new FoodDataResponse(
                 String.valueOf(foodEntity.getId()),
                 foodEntity.getBrand_name()+" "+ foodEntity.getName(),

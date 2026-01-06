@@ -1,10 +1,7 @@
 package com.caliq.FoodSecretApiConnection.models;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record FoodInfoDto(
         @JsonProperty("food") Food food
@@ -15,12 +12,10 @@ public record FoodInfoDto(
             @JsonProperty("food_name") String name,
             @JsonProperty("servings") Servings servings
     ) {}
-
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Servings(
             @JsonProperty("serving") List<Serving> servingList
     ) {}
-
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Serving(
             @JsonProperty("serving_id") String servingId,

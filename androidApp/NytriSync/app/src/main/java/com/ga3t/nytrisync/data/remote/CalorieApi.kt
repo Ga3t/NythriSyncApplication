@@ -1,5 +1,4 @@
-package com.ga3t.nytrisync.data.remote
-
+﻿package com.ga3t.nytrisync.data.remote
 import com.ga3t.nytrisync.data.model.CalendarResponse
 import com.ga3t.nytrisync.data.model.MainPageResponse
 import com.ga3t.nytrisync.data.model.MealByDateResponse
@@ -10,7 +9,6 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 import java.math.BigDecimal
-
 interface CalorieApi {
     @GET("calapp/mainpage")
     suspend fun mainPage(): Response<MainPageResponse>
@@ -25,18 +23,15 @@ interface CalorieApi {
         @Query("DateTime") dateTime: String,
         @Body body: MealDto
     ): Response<String>
-
     @POST("calapp/addwater")
     suspend fun addWater(
         @Query("Date") date: String,
         @Query("Water-To-Add") water: BigDecimal
     ): Response<BigDecimal>
-
     @GET("calapp/calendar")
     suspend fun getCalendar(
         @Query("year") year: Int
     ): Response<CalendarResponse>
-
     @GET("calapp/pageByDate")
     suspend fun getPageByDate(
         @Query("Date") date: String
